@@ -93,7 +93,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     @property
     def is_active(self):
         return self.activo
-
+#comen
 #***********************************************************************************************************
 
 class Salon(models.Model):
