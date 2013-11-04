@@ -600,7 +600,7 @@ def addAll(request):
 	response.write("")
 	if request.is_ajax():
 		return response
-
+#
 def final(request):
 	bol=request.GET['bol']
 	creditos=request.session['cred']
