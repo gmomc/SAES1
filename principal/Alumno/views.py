@@ -1,0 +1,627 @@
+# Create your views here.
+from django.shortcuts import render
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate
+from django.http import HttpResponse
+from principal.models import *
+import time
+from django.utils import timezone
+cupo=30
+# Create your views here.
+def alumnoInicio(request):
+
+	bol=request.user
+	alu=CitaInsc.objects.get(alumno__cve_usuario=bol)
+	cita=alu.cita
+	hora=datetime.now(tz=timezone.get_default_timezone())
+	inscrito=alu.inscrito
+	return render(request, 'Alumno/Alinicio.html', locals(), context_instance=RequestContext(request))
+
+def alumnoDatosGen(request):
+	
+	bol=request.user
+	nombreCompleto=Usuario.get_full_name(bol)
+	if bol.sexo=='M':
+		sexo="Masculino"
+	else:
+		sexo="Femenino"
+	bol2=Alumno.objects.get(cve_usuario=bol)
+	aux=0
+
+	if request.method=='POST':
+		if 'mod_datgen' in request.POST:
+			aux=1
+			#print "datos generales"
+			return render(request, 'Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+					
+
+		elif 'mod_nac' in request.POST:
+			aux=2
+			print "nacimiento"
+			return render(request, 'Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+
+		elif 'mod_dir' in request.POST:
+			aux=3
+			print "direccion"
+			return render(request, 'Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+
+		elif 'mod_tutor' in request.POST:
+			aux=5
+			print "tutor"
+			return render(request, 'Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+
+	return render(request, 'Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+
+def datgenRedirect(request):
+	return HttpResponseRedirect('../alumnoDatosGen/')
+
+
+def actualizarInfo(request):
+	bol=request.user
+	if 'fin_datgen' in request.POST:
+		bol=request.user
+		curp=request.POST.get('al_curp')
+		Usuario.objects.filter(clave=bol).update(curp=curp)
+		aux=0
+		notif=1
+		return render_to_response('Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+		#return HttpResponseRedirect('../alumnoDatosGen/')
+
+	elif 'fin_nac' in request.POST:		
+		nac=request.POST.get('al_fnac')
+		nacionalidad=request.POST.get('al_nacionalidad')
+		Usuario.objects.filter(clave=bol).update(nacionalidad=nacionalidad)
+		aux=0
+		notif=1
+		return render_to_response('Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+		#return HttpResponseRedirect('../alumnoDatosGen/')
+
+	elif 'fin_dir' in request.POST:
+		calle=request.POST.get('al_calle')
+		num=request.POST.get('al_numint')
+		colonia=request.POST.get('al_colonia')
+		cp=request.POST.get('al_cp')
+		edo=request.POST.get('al_estado')
+		delmun=request.POST.get('al_delmun')
+		tel=request.POST.get('al_tel')
+		movil=request.POST.get('al_movil')
+		email=request.POST.get('al_email')
+		Usuario.objects.filter(clave=bol).update(calle=calle, num=num, colonia=colonia, cp=cp, estado=edo, municipio_o_delegacion=delmun, Telefono_Casa=tel, Telefono_Celular=movil, email_personal=email)
+		aux=0
+		notif=1
+		return render_to_response('Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+		#return HttpResponseRedirect('../alumnoDatosGen/')
+
+	elif 'fin_tutor' in request.POST:
+		bol=request.user
+		tutor=request.POST.get('al_tutor')
+		Alumno.objects.filter(cve_usuario=bol).update(tutor_legal=tutor)
+		aux=0
+		notif=1
+		return render_to_response('Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
+		#return HttpResponseRedirect('../alumnoDatosGen/')
+
+
+def alumnoKardex(request):
+	bol=request.user
+	return render(request, 'Alumno/Alkardex.html', locals(), context_instance=RequestContext(request))
+
+def kardexframe(request):
+	bol=request.user	
+	nivel1=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=1)
+	nivel2=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=2)
+	nivel3=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=3)
+	nivel4=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=4)
+	nivel5=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=5)
+
+	len1=len(nivel1)
+	len2=len(nivel2)
+	len3=len(nivel3)
+	len4=len(nivel4)
+	len5=len(nivel5)
+	
+	if len(nivel4)==0:
+		print "es vacio"
+	else:
+		print "tiene algo"
+
+	return render(request, 'Alumno/Alkardex-frame.html', locals(), context_instance=RequestContext(request))
+
+def alumnoHorario(request):
+	bol=request.user
+	return render(request, 'Alumno/Alhorario.html', locals(), context_instance=RequestContext(request))
+
+def color(materia):
+    if(materia.clasificacion=='Institucional'):
+        return 'm1'
+
+    elif(materia.clasificacion=='Cientifica_basica'):
+        return 'm4'
+
+    elif(materia.clasificacion=='Profesional'):
+        return 'm3'
+
+    elif(materia.clasificacion=='Terminal_integracion'):
+        return 'm2'
+    else:
+        return 'm3'
+
+def nombreCompleto(cve_usuario):
+	nom = cve_usuario.nombre
+	ap = cve_usuario.apellidoPaterno
+	am = cve_usuario.apellidoMaterno
+	nc = ap + ' ' + am + ' ' + nom
+	return nc
+
+def horarioframe(request):
+	bol=request.user
+	Grupos=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
+	for alumno in Grupos:
+
+		if(alumno.materia_grupo.horario.cve_horario==1):
+			materia1=alumno.materia_grupo.materia.nombre
+			m1=color(alumno.materia_grupo.materia)
+			grupo1=alumno.materia_grupo.grupo
+			prof1=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==2):
+			materia2=alumno.materia_grupo.materia.nombre
+			m2=color(alumno.materia_grupo.materia)
+			grupo2=alumno.materia_grupo.grupo
+			prof2=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==3):
+			materia3=alumno.materia_grupo.materia.nombre
+			m3=color(alumno.materia_grupo.materia)
+			grupo3=alumno.materia_grupo.grupo
+			prof3=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==4):
+			materia4=alumno.materia_grupo.materia.nombre
+			m4=color(alumno.materia_grupo.materia)
+			grupo4=alumno.materia_grupo.grupo
+			prof4=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==5):
+			materia5=alumno.materia_grupo.materia.nombre
+			m5=color(alumno.materia_grupo.materia)
+			grupo5=alumno.materia_grupo.grupo
+			prof5=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==6):
+			materia6=alumno.materia_grupo.materia.nombre
+			m6=color(alumno.materia_grupo.materia)
+			grupo6=alumno.materia_grupo.grupo
+			prof6=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==7):
+			materia7=alumno.materia_grupo.materia.nombre
+			m7=color(alumno.materia_grupo.materia)
+			grupo7=alumno.materia_grupo.grupo
+			prof7=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==8):
+			materia8=alumno.materia_grupo.materia.nombre
+			m8=color(alumno.materia_grupo.materia)
+			grupo8=alumno.materia_grupo.grupo
+			prof8=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+
+		if(alumno.materia_grupo.horario.cve_horario==9):
+			materia9=alumno.materia_grupo.materia.nombre
+			m9=color(alumno.materia_grupo.materia)
+			grupo9=alumno.materia_grupo.grupo
+			prof9=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==10):
+			materia10=alumno.materia_grupo.materia.nombre
+			m10=color(alumno.materia_grupo.materia)
+			grupo10=alumno.materia_grupo.grupo
+			prof10=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==11):
+			materia11=alumno.materia_grupo.materia.nombre
+			m11=color(alumno.materia_grupo.materia)
+			grupo11=alumno.materia_grupo.grupo
+			prof11=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==12):
+			materia12=alumno.materia_grupo.materia.nombre
+			m12=color(alumno.materia_grupo.materia)
+			grupo12=alumno.materia_grupo.grupo
+			prof12=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==13):
+			materia13=alumno.materia_grupo.materia.nombre
+			m13=color(alumno.materia_grupo.materia)
+			grupo13=alumno.materia_grupo.grupo
+			prof13=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==14):
+			materia14=alumno.materia_grupo.materia.nombre
+			m14=color(alumno.materia_grupo.materia)
+			grupo14=alumno.materia_grupo.grupo
+			prof14=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		elif(alumno.materia_grupo.horario.cve_horario==15):
+			materia15=alumno.materia_grupo.materia.nombre
+			m15=color(alumno.materia_grupo.materia)
+			grupo15=alumno.materia_grupo.grupo
+			prof15=nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+
+	return render(request, 'Alumno/Alhorario-frame.html', locals(), context_instance=RequestContext(request))
+
+
+def alumnoCalifsemestre(request):
+	bol=request.user
+	return render(request, 'Alumno/Alcalsemestre.html', locals(), context_instance=RequestContext(request))
+
+
+def califsemestreframe(request):
+	bol=request.user
+	Califs=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)	
+	return render(request, 'Alumno/Alcalsemestre-frame.html', locals(), context_instance=RequestContext(request))
+
+def alumnoCalifets(request):
+	bol=request.user
+	return render(request, 'Alumno/Alcalets.html', locals(), context_instance=RequestContext(request))
+
+def califetsframe(request):
+	bol=request.user
+	calets=AlumnoTomaEts.objects.filter(alumno__cve_usuario__clave=bol)	
+	return render(request, 'Alumno/Alcalets-frame.html', locals(), context_instance=RequestContext(request))
+
+def alumnoCalifsaberes(request):
+	bol=request.user
+	return render(request, 'Alumno/Alcalsaberes.html', locals(), context_instance=RequestContext(request))
+
+def califsaberesframe(request):
+	bol=request.user
+	return render(request, 'Alumno/Alcalsaberes-frame.html', locals(), context_instance=RequestContext(request))
+
+def alumnoTutor(request):
+	bol=request.user
+	dat=Alumno.objects.get(cve_usuario=bol)
+	aux=dat.tutor_escolar.cve_usuario
+	nomcomprof=Usuario.get_full_name(aux)
+	print dat.tutor_escolar.hora_entrada
+	print dat.tutor_escolar.hora_salida
+	return render(request, 'Alumno/Altutor.html', locals(), context_instance=RequestContext(request))
+
+
+def alumnoSolicitardocs(request):
+	bol=request.user
+	return render(request, 'Alumno/Alsolicitardocs.html', locals(), context_instance=RequestContext(request))
+
+def alumnoEvaluarprofs(request):
+	bol=request.user
+	return render(request, 'Alumno/Alevaluarprofs.html', locals(), context_instance=RequestContext(request))
+
+def evaluarprofsframe1(request):
+	bol=request.user
+	inscrito=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
+	
+	#if 'ev_prof' in request.GET:
+	#	cveprof=request
+	cveprofs=[]
+	#aux=[]
+	#result=[]
+	#for alumno in inscrito:
+	#	prof=alumno.materia_grupo.profesor
+	#	if prof not in aux:
+	#		aux.append(prof)
+	#		result.append(prof)
+
+	for alumno in inscrito:
+		cveprofs.append(alumno.materia_grupo.profesor.cve_usuario)
+		print cveprofs
+
+	return render(request, 'Alumno/Alevaluarprofs-frame.html', locals(), context_instance=RequestContext(request))
+
+def evaluarprofsframe2(request, cve_prof, grupo, idmat):
+	
+	bol=request.user
+	prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol, materia_grupo__profesor__cve_usuario__clave=cve_prof, materia_grupo__grupo__cve_grupo=grupo)
+	for alumno in prof:
+		nomprof= nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
+		nommateria= alumno.materia_grupo.materia.nombre
+		grupo= alumno.materia_grupo.grupo
+	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
+
+def realizarEvaluacion(request):
+	#if 'fin_ev' in request.POST:
+	if request.method == 'POST':
+		#return render(request, 'Alumno/Alevaluarprofs-frame1.html', locals(), context_instance=RequestContext(request))
+		return HttpResponseRedirect('../evaluarprofsframe1/')
+
+
+def alumnoHorariolabs(request):
+	bol=request.user
+	return render(request, 'Alumno/Alhorariolabs.html', locals(), context_instance=RequestContext(request))
+
+def horariolabsframe(request):
+	labs=MateriaImpartidaEnLab.objects.all()
+	for cve_materia_grupo in labs:
+		print cve_materia_grupo
+
+	fil=MateriaImpartidaEnLab.objects.filter(nombre_lab__nombre="LS1")
+	for cve_materia_grupo in fil:
+		print cve_materia_grupo.cve_materia_grupo.horario
+		print cve_materia_grupo.dia
+	return render(request, 'Alumno/Alhorariolabs-frame.html', locals(), context_instance=RequestContext(request))
+
+def alumnoCambiarpass(request):
+	bol=request.user
+	return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
+
+def cambiarPass(request):
+	bol=request.user
+
+	if request.method=='POST':
+
+		passact=request.POST.get('passact')
+		passnuevo=request.POST.get('passnuevo')
+		if passact is None or passnuevo is None:
+			print "vacios"
+			notif=3
+			return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
+		else:
+			acceso = authenticate(username=str(bol), password=str(passact))
+			usuario=Usuario.objects.get(clave=bol)
+			
+			if acceso is not None:
+				print "contrasena correcta"
+				usuario.set_password(passnuevo)
+				usuario.save()
+				print "passnuevo: "+passnuevo
+				notif=1
+				return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
+	    	if acceso is None:
+	    		notif=2
+	    		print "contrasena incorrecta"
+	    		return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))			
+	
+
+def alumnoinscsem(request):
+	bol=request.user
+	request.session['cred']=0
+	matInfo=Materia.objects.all()
+	return render(request,'Alumno/AlInscribir.html',locals(),context_instance=RequestContext(request))
+	
+def getMateria(request):
+	metod=request.GET['metod']
+	niv=request.GET['nivel']
+	response=HttpResponse()
+	response.write("<select id='selector' onChange='getInfo(this.value)'>")
+	if metod==str(1):
+		matInfo=Materia.objects.filter(nivel=niv)
+		for materia in matInfo:
+			response.write("<option value='"+materia.cve_materia+"'>"+materia.nombre+"</option>")
+	else:
+		grupInfo=Grupo.objects.all()
+		for grupo in grupInfo:
+			if grupo.cve_grupo[0]==niv:
+				response.write("<option value='"+grupo.cve_grupo+"'>"+grupo.cve_grupo+"</option>")
+	response.write("</select>")
+	if request.is_ajax():
+		return response
+		
+def getResult(request):
+	clave=request.GET['clave']
+	metod=request.GET['metod']
+	response=HttpResponse()
+	response.write("<table id='hor-minimalist-a'><thead>")
+	if metod==str(1):
+		matInfo=Materia.objects.get(cve_materia=clave)
+		matgrupInfo=MateriaImpartidaEnGrupo.objects.filter(materia=matInfo)
+		response.write("<tr><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th><th>Cupo</th></tr></thead><tbody>");
+		for mat in matgrupInfo:
+			inscritos=AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=mat).count()
+			if inscritos!=30:
+				response.write("<tr><td>"+mat.grupo.cve_grupo+"</td><td>"+mat.profesor.cve_usuario.nombre+" "+mat.profesor.cve_usuario.apellidoPaterno+" "+mat.profesor.cve_usuario.apellidoMaterno+"</td>")
+				if mat.horario.cve_horario==1:
+					response.write("<td>7:00-8:30</td><td></td><td></td><td>7:00-8:30</td><td>8:30-10:00</td>")
+				if mat.horario.cve_horario==2:
+					response.write("<td></td><td>7:00-8:30</td><td>7:00-8:30</td><td></td><td>7:00-8:30</td>")
+				if mat.horario.cve_horario==3:
+					response.write("<td>8:30-10:30</td><td></td><td>8:30-10:30</td><td>8:30-10:30</td><td></td>")
+				if mat.horario.cve_horario==4:
+					response.write("<td>10:30-12:00</td><td>8:30-10:30</td><td></td><td>10:30-12:00</td><td></td>")
+				if mat.horario.cve_horario==5:
+					response.write("<td></td><td>10:30-12:00</td><td>10:30-12:00</td><td></td><td>10:30-12:00</td>")
+				if mat.horario.cve_horario==6:
+					response.write("<td>12:00-13:30</td><td></td><td>12:00-13:30</td><td>12:00-13:30</td><td></td>")
+				if mat.horario.cve_horario==7:
+					response.write("<td></td><td>12:00-13:30</td><td>13:30-15:00</td><td></td><td>12:00-13:30</td>")
+				if mat.horario.cve_horario==8:
+					response.write("<td>13:30-15:00</td><td>13:30-15:00</td><td></td><td>13:30-15:00</td><td></td>")
+				if mat.horario.cve_horario==9:
+					response.write("<td>15:00-16:30</td><td></td><td></td><td>15:00-16:30</td><td>16:30-18:00</td>")
+				if mat.horario.cve_horario==10:
+					response.write("<td></td><td>15:00-16:30</td><td>15:00-16:30</td><td></td><td>15:00-16:30</td>")
+				if mat.horario.cve_horario==11:
+					response.write("<td>16:30-18:00</td><td></td><td>16:30-18:00</td><td>16:30-18:00</td><td></td>")
+				if mat.horario.cve_horario==12:
+					response.write("<td>18:30-20:00</td><td>16:30-18:00</td><td></td><td>18:30-20:00</td><td></td>")
+				if mat.horario.cve_horario==13:
+					response.write("<td></td><td>18:30-20:00</td><td>18:30-20:00</td><td></td><td>18:30-20:00</td>")
+				if mat.horario.cve_horario==14:
+					response.write("<td>20:00-21:30</td><td></td><td>20:00-21:30</td><td></td><td>20:00-21:30</td>")
+				response.write("<td>"+str(mat.cupo-inscritos)+"</td><td><img src='../static/img/add.gif' onClick=\"updateAct();anadir('"+mat.grupo.cve_grupo+"','"+mat.materia.cve_materia+"')\" /></td></tr>")
+	else:
+		grupInfo=Grupo.objects.get(cve_grupo=clave)
+		grupoInfo=MateriaImpartidaEnGrupo.objects.filter(grupo=grupInfo)
+		response.write("<tr><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspLunes&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspMartes&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspJueves&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspViernes&nbsp&nbsp&nbsp&nbsp</th><th>Cupo</th></tr></thead><tbody>");
+		for mat in grupoInfo:
+			inscritos=AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=mat).count()
+			response.write("<tr><td class>"+mat.materia.nombre+"</td><td>"+mat.profesor.cve_usuario.nombre+" "+mat.profesor.cve_usuario.apellidoPaterno+" "+mat.profesor.cve_usuario.apellidoMaterno+"</td>")
+			if mat.horario.cve_horario==1:
+				response.write("<td>7:00-8:30</td><td></td><td></td><td>7:00-8:30</td><td>8:30-10:00</td>")
+			if mat.horario.cve_horario==2:
+				response.write("<td></td><td>7:00-8:30</td><td>7:00-8:30</td><td></td><td>7:00-8:30</td>")
+			if mat.horario.cve_horario==3:
+				response.write("<td>8:30-10:30</td><td></td><td>8:30-10:30</td><td>8:30-10:30</td><td></td>")
+			if mat.horario.cve_horario==4:
+				response.write("<td>10:30-12:00</td><td>8:30-10:30</td><td></td><td>10:30-12:00</td><td></td>")
+			if mat.horario.cve_horario==5:
+				response.write("<td></td><td>10:30-12:00</td><td>10:30-12:00</td><td></td><td>10:30-12:00</td>")
+			if mat.horario.cve_horario==6:
+				response.write("<td>12:00-13:30</td><td></td><td>12:00-13:30</td><td>12:00-13:30</td><td></td>")
+			if mat.horario.cve_horario==7:
+				response.write("<td></td><td>12:00-13:30</td><td>13:30-15:00</td><td></td><td>12:00-13:30</td>")
+			if mat.horario.cve_horario==8:
+				response.write("<td>13:30-15:00</td><td>13:30-15:00</td><td></td><td>13:30-15:00</td><td></td>")
+			if mat.horario.cve_horario==9:
+				response.write("<td>15:00-16:30</td><td></td><td></td><td>15:00-16:30</td><td>16:30-18:00</td>")
+			if mat.horario.cve_horario==10:
+				response.write("<td></td><td>15:00-16:30</td><td>15:00-16:30</td><td></td><td>15:00-16:30</td>")
+			if mat.horario.cve_horario==11:
+				response.write("<td>16:30-18:00</td><td></td><td>16:30-18:00</td><td>16:30-18:00</td><td></td>")
+			if mat.horario.cve_horario==12:
+				response.write("<td>18:30-20:00</td><td>16:30-18:00</td><td></td><td>18:30-20:00</td><td></td>")
+			if mat.horario.cve_horario==13:
+				response.write("<td></td><td>18:30-20:00</td><td>18:30-20:00</td><td></td><td>18:30-20:00</td>")
+			if mat.horario.cve_horario==14:
+				response.write("<td>20:00-21:30</td><td></td><td>20:00-21:30</td><td></td><td>20:00-21:30</td>")
+			response.write("<td>"+str(mat.cupo-inscritos)+"</td><td><img src='../static/img/add.gif' onClick=\"updateAct();anadir('"+mat.grupo.cve_grupo+"','"+mat.materia.cve_materia+"')\" /></td></tr>")
+	response.write("</tbody></table>")
+	if request.is_ajax():
+		return response
+def insertData(request):
+	bol=request.GET['bol']
+	grupo=request.GET['grupo']
+	materia=request.GET['materia']
+	response=HttpResponse()
+	grupInfo=Grupo.objects.get(cve_grupo=grupo)
+	matInfo=Materia.objects.get(cve_materia=materia)
+	materInfo=MateriaImpartidaEnGrupo.objects.get(grupo=grupInfo,materia=matInfo)
+	materiaInfo=MateriaImpartidaEnGrupo.objects.filter(materia=matInfo).all()
+	if materInfo.cupo==0:
+		response.write("No hay cupo disponible para "+ materInfo.materia.nombre+" en el grupo "+materInfo.grupo.cve_grupo+"")
+		return response
+	al=Usuario.objects.get(clave=bol)
+	alu=Alumno.objects.get(cve_usuario=al)
+	inscrito=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
+	materias=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
+	try:
+		pinsc=AlumnoTomaClaseEnGrupo.objects.get(alumno=alu,materia_grupo=materInfo)
+	except:
+		p=AlumnoTomaClaseEnGrupo(alumno=alu,materia_grupo=materInfo,calificacion=0,calificacionExtra=0)
+		try:
+			repeat=AlumnoTomaClaseEnGrupo.objects.get(materia_grupo__horario=p.materia_grupo.horario,alumno=alu)
+		except:
+			try:
+				repeat_materia=AlumnoTomaClaseEnGrupo.objects.get(alumno=alu,materia_grupo__materia=materInfo)
+			except:
+				p.save()
+				request.session['cred']=request.session['cred']+matInfo.creditos
+				response.write("La materia "+p.materia_grupo.materia.nombre+" se ha agregado correctamente")
+				if request.is_ajax():
+					return response
+		response.write("La materia "+matInfo.nombre+" se traslapa con "+repeat.materia_grupo.materia.nombre+"  que ya inscribiste en el grupo "+repeat.materia_grupo.grupo.cve_grupo+"");
+		return response
+	response.write("Ya has inscrito "+pinsc.materia_grupo.materia.nombre+" en el grupo "+pinsc.materia_grupo.grupo.cve_grupo+"")
+	if request.is_ajax():
+			return response
+def delData(request):
+	bol=request.GET['bol']
+	grupo=request.GET['grupo']
+	materia=request.GET['materia']
+	response=HttpResponse()
+	grupInfo=Grupo.objects.get(cve_grupo=grupo)
+	matInfo=Materia.objects.get(cve_materia=materia)
+	request.session['cred']=request.session['cred']-matInfo.creditos
+	materInfo=MateriaImpartidaEnGrupo.objects.get(grupo=grupInfo,materia=matInfo)
+	materiaInfo=MateriaImpartidaEnGrupo.objects.filter(materia=matInfo).all()
+	al=Usuario.objects.get(clave=bol)
+	alu=Alumno.objects.get(cve_usuario=al)
+	materias=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
+	p=AlumnoTomaClaseEnGrupo.objects.get(alumno=alu,materia_grupo=materInfo)
+	p.delete()
+	if request.is_ajax():
+		return response
+
+def delallData(request):
+	bol=request.GET['bol']
+	request.session['cred']=0
+	response=HttpResponse()
+	al=Usuario.objects.get(clave=bol)
+	alu=Alumno.objects.get(cve_usuario=al)
+	p=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
+	response.write("<table id='hor-minimalist-a'><thead>")
+	response.write("<tr><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th></tr></thead><tbody></tbody></table>");
+	for inscrito in p:
+		inscrito.delete()
+	if request.is_ajax():
+		return response
+def updateAct(request):
+	bol=request.GET['bol']
+	time.sleep(.1)
+	response=HttpResponse()
+	al=Usuario.objects.get(clave=bol)
+	alu=Alumno.objects.get(cve_usuario=al)
+	materias=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
+	response.write("<table id='hor-minimalist-a'><thead>")
+	response.write("<tr><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th></tr></thead><tbody>");
+	for mat in materias:
+		response.write("<tr><td>"+mat.materia_grupo.materia.nombre+"</td><td>"+mat.materia_grupo.grupo.cve_grupo+"</td><td>"+mat.materia_grupo.profesor.cve_usuario.nombre+" "+mat.materia_grupo.profesor.cve_usuario.apellidoPaterno+" "+mat.materia_grupo.profesor.cve_usuario.apellidoMaterno+"</td>")
+		if mat.materia_grupo.horario.cve_horario==1:
+			response.write("<td>7:00-8:30</td><td></td><td></td><td>7:00-8:30</td><td>8:30-10:00</td>")
+		if mat.materia_grupo.horario.cve_horario==2:
+			response.write("<td></td><td>7:00-8:30</td><td>7:00-8:30</td><td></td><td>7:00-8:30</td>")
+		if mat.materia_grupo.horario.cve_horario==3:
+			response.write("<td>8:30-10:30</td><td></td><td>8:30-10:30</td><td>8:30-10:30</td><td></td>")
+		if mat.materia_grupo.horario.cve_horario==4:
+			response.write("<td>10:30-12:00</td><td>8:30-10:30</td><td></td><td>10:30-12:00</td><td></td>")
+		if mat.materia_grupo.horario.cve_horario==5:
+			response.write("<td></td><td>10:30-12:00</td><td>10:30-12:00</td><td></td><td>10:30-12:00</td>")
+		if mat.materia_grupo.horario.cve_horario==6:
+			response.write("<td>12:00-13:30</td><td></td><td>12:00-13:30</td><td>12:00-13:30</td><td></td>")
+		if mat.materia_grupo.horario.cve_horario==7:
+			response.write("<td></td><td>12:00-13:30</td><td>13:30-15:00</td><td></td><td>12:00-13:30</td>")
+		if mat.materia_grupo.horario.cve_horario==8:
+			response.write("<td>13:30-15:00</td><td>13:30-15:00</td><td></td><td>13:30-15:00</td><td></td>")
+		if mat.materia_grupo.horario.cve_horario==9:
+			response.write("<td>15:00-16:30</td><td></td><td></td><td>15:00-16:30</td><td>16:30-18:00</td>")
+		if mat.materia_grupo.horario.cve_horario==10:
+			response.write("<td></td><td>15:00-16:30</td><td>15:00-16:30</td><td></td><td>15:00-16:30</td>")
+		if mat.materia_grupo.horario.cve_horario==11:
+			response.write("<td>16:30-18:00</td><td></td><td>16:30-18:00</td><td>16:30-18:00</td><td></td>")
+		if mat.materia_grupo.horario.cve_horario==12:
+			response.write("<td>18:30-20:00</td><td>16:30-18:00</td><td></td><td>18:30-20:00</td><td></td>")
+		if mat.materia_grupo.horario.cve_horario==13:
+			response.write("<td></td><td>18:30-20:00</td><td>18:30-20:00</td><td></td><td>18:30-20:00</td>")
+		if mat.materia_grupo.horario.cve_horario==14:
+				response.write("<td>20:00-21:30</td><td></td><td>20:00-21:30</td><td></td><td>20:00-21:30</td>")
+		response.write("<td><img src='../static/img/delete.gif' onClick=\"updateAct();eliminar('"+mat.materia_grupo.grupo.cve_grupo+"','"+mat.materia_grupo.materia.cve_materia+"')\" /></td></tr>")
+	response.write("</table><br>Creditos usados: "+str(request.session['cred']))
+	if request.is_ajax():
+		return response
+def addAll(request):
+	bol=request.GET['bol']
+	grupo=request.GET['grup']
+	response=HttpResponse()
+	grupInfo=Grupo.objects.get(cve_grupo=grupo)
+	materInfo=MateriaImpartidaEnGrupo.objects.filter(grupo=grupInfo)
+	al=Usuario.objects.get(clave=bol)
+	alu=Alumno.objects.get(cve_usuario=al)
+	for materia in materInfo:
+		request.session['cred']=request.session['cred']+materia.materia.creditos
+		p=AlumnoTomaClaseEnGrupo(alumno=alu,materia_grupo=materia,calificacion=0,calificacionExtra=0)
+		p.save()
+	response.write("")
+	if request.is_ajax():
+		return response
+
+def final(request):
+	bol=request.GET['bol']
+	creditos=request.session['cred']
+	response=HttpResponse()
+	alu=Alumno.objects.get(cve_usuario__clave=bol)
+	if alu.tipo=='Regular':
+		maxcred=60
+	else:
+		maxcred=30
+	if creditos>maxcred:
+		response.write("Has excedido los creditos permitidos")
+	if creditos<15:
+		response.write("No has inscrito los creditos minimos necesarios")
+	if creditos>15 and creditos<maxcred:
+		CitaInsc.objects.filter(alumno=alu).update(inscrito=1)
+		response.write("OK")
+	if request.is_ajax():
+		return response
+
+def cita(request):
+	bol=request.user
+	alu=CitaInsc.objects.get(alumno__cve_usuario=bol)
+	insc=alu.cita
+	return render(request, 'Alumno/Alcita.html', locals(), context_instance=RequestContext(request))

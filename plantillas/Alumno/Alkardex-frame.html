@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="{{MEDIA_URL}}js/script.js"></script>
+	<link rel="stylesheet" href="{{MEDIA_URL}}css/style.css">
+
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.min.css">
+	
+	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.min.js"></script>
+	<!--<script type="text/javascript">
+	 	$(".dropdown-toggle").dropdown-toggle
+	</script>-->
+	
+
+	<title>SAESCOM</title>
+</head>
+<body>
+
+	<div class="contenedor-iframe">
+
+		<div class="page-header">
+			<h2>Kárdex</h2>
+		</div>
+
+		<div class="form-inline" style="margin-left: 500px;">
+			<label><strong>Promedio:</strong></label>
+			<label></label>
+		</div>
+
+		{% if len1 != 0 %}
+
+		<div class="table table-condensed" align="center" style="margin-top: 30px;">
+			<p class="text-info">Primer Nivel</p>
+			<table>
+				<thead>					
+					<tr>
+						<th>Clave</th>
+						<th>Materia</th>
+						<th>Periodo</th>
+						<th>Evaluación</th>
+						<th>Calificación</th>
+					</tr>
+				</thead>				
+
+				<tbody>					
+					{% for alumno in nivel1 %}
+					<tr>
+						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
+						<td>{{alumno.materia_grupo.materia.nombre}}</td>
+						<td>{{alumno.periodo}}</td>
+						
+						{% if alumno.calificacionExtra > alumno.calificacion %}
+							<td>EXT</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacionExtra}}</td>
+							{% endif %}
+						{% else %}
+							<td>ORD</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacion}}</td>
+							{% endif %}
+						{% endif %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		{% endif %}
+
+		{% if len2 != 0 %}
+
+		<div class="table table-condensed" align="center" style="margin-top: 30px;">
+			<p class="text-info">Segundo Nivel</p>
+			<table>
+				<thead>					
+					<tr>
+						<th>Clave</th>
+						<th>Materia</th>
+						<th>Periodo</th>
+						<th>Evaluación</th>
+						<th>Calificación</th>
+					</tr>
+				</thead>				
+
+				<tbody>					
+					{% for alumno in nivel2 %}
+					<tr>
+						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
+						<td>{{alumno.materia_grupo.materia.nombre}}</td>
+						<td>{{alumno.periodo}}</td>
+						
+						{% if alumno.calificacionExtra > alumno.calificacion %}
+							<td>EXT</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacionExtra}}</td>
+							{% endif %}
+						{% else %}
+							<td>ORD</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacion}}</td>
+							{% endif %}
+						{% endif %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		{% endif %}
+
+		{% if len3 != 0 %}
+
+		<div class="table table-condensed" align="center" style="margin-top: 30px;">
+			<p class="text-info">Tercer Nivel</p>
+			<table>
+				<thead>					
+					<tr>
+						<th>Clave</th>
+						<th>Materia</th>
+						<th>Periodo</th>
+						<th>Evaluación</th>
+						<th>Calificación</th>
+					</tr>
+				</thead>				
+
+				<tbody>					
+					{% for alumno in nivel3 %}
+					<tr>
+						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
+						<td>{{alumno.materia_grupo.materia.nombre}}</td>
+						<td>{{alumno.periodo}}</td>
+						
+						{% if alumno.calificacionExtra > alumno.calificacion %}
+							<td>EXT</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacionExtra}}</td>
+							{% endif %}
+						{% else %}
+							<td>ORD</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacion}}</td>
+							{% endif %}
+						{% endif %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		{% endif %}
+
+		{% if len4 != 0 %}
+
+		<div class="table table-condensed" align="center" style="margin-top: 30px;">
+			<p class="text-info">Cuarto Nivel</p>
+			<table>
+				<thead>					
+					<tr>
+						<th>Clave</th>
+						<th>Materia</th>
+						<th>Periodo</th>
+						<th>Evaluación</th>
+						<th>Calificación</th>
+					</tr>
+				</thead>				
+
+				<tbody>					
+					{% for alumno in nivel4 %}
+					<tr>
+						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
+						<td>{{alumno.materia_grupo.materia.nombre}}</td>
+						<td>{{alumno.periodo}}</td>
+						
+						{% if alumno.calificacionExtra > alumno.calificacion %}
+							<td>EXT</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacionExtra}}</td>
+							{% endif %}
+						{% else %}
+							<td>ORD</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacion}}</td>
+							{% endif %}
+						{% endif %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		{% endif %}
+
+		{% if len5 != 0 %}
+
+		<div class="table table-condensed" align="center" style="margin-top: 30px;">
+			<p class="text-info">Quinto Nivel</p>
+			<table>
+				<thead>					
+					<tr>
+						<th>Clave</th>
+						<th>Materia</th>
+						<th>Periodo</th>
+						<th>Evaluación</th>
+						<th>Calificación</th>
+					</tr>
+				</thead>				
+
+				<tbody>					
+					{% for alumno in nivel5 %}
+					<tr>
+						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
+						<td>{{alumno.materia_grupo.materia.nombre}}</td>
+						<td>{{alumno.periodo}}</td>
+						
+						{% if alumno.calificacionExtra > alumno.calificacion %}
+							<td>EXT</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacionExtra}}</td>
+							{% endif %}
+						{% else %}
+							<td>ORD</td>
+							{% if alumno.calificacionExtra == None%}
+							<td>-</td>
+							{% else %}
+							<td>{{alumno.calificacion}}</td>
+							{% endif %}
+						{% endif %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		{% endif %}
+
+
+		<div class="alin-der">
+			<button type="button" class="btn btn-default">Imprimir kárdex</button>
+		</div>
+
+
+
+	</div>
+
+	<!--
+	def kardexframe(request):
+	bol=request.user	
+	nivel1=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=1)
+	nivel2=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=2)
+	nivel3=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=3)
+	nivel4=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=4)
+	nivel5=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=5)
+
+	len1=len(nivel1)
+	len2=len(nivel2)
+	len3=len(nivel3)
+	len4=len(nivel4)
+	len5=len(nivel5)
+
+	return render(request, 'Alumno/Alkardex-frame.html', locals(), context_instance=RequestContext(request))
+	-->
+	
+
+
+
+</body>
+</html>
