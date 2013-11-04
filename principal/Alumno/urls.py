@@ -39,5 +39,6 @@ urlpatterns = patterns('',
 	url(r'^updateAct/$' , 'principal.Alumno.views.updateAct'),
 	url(r'^final/$' , 'principal.Alumno.views.final'),
 	url(r'^Alcita/$' , 'principal.Alumno.views.cita'),
+	url(r'^reporteHorario/$' , 'principal.Alumno.views.reporteHorario'),
 
 )

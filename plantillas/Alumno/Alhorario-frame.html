@@ -28,10 +28,11 @@
 			<h2>Horario</h2>
 		</div>
 
+<form action="../reporteHorario/" method="POST">{% csrf_token %}	
 		<div class="alin-der">
-			<button type="button" class="btn btn-default">Imprimir horario</button>
+			<input class="btn" type="submit" name="reporteHorario" value="Imprimir Horario"/>
 		</div>
-
+	</form>	
 		<div id="container-tabla-horario">
 			<table id='tabla-horas'>
 				<tr><td>07.00<br>08.30</td></tr>
