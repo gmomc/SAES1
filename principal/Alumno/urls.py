@@ -40,5 +40,6 @@ urlpatterns = patterns('',
 	url(r'^final/$' , 'principal.Alumno.views.final'),
 	url(r'^Alcita/$' , 'principal.Alumno.views.cita'),
 	url(r'^reporteHorario/$' , 'principal.Alumno.views.reporteHorario'),
+	url(r'^reporteKardex/$' , 'principal.Alumno.views.reporteKardex'),
 
 )
