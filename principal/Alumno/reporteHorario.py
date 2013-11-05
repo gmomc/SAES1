@@ -12,13 +12,13 @@ class reporteDeHorario(Report):
     class band_detail(DetailBand):
             height=0.7*cm
             elements=[
-                ObjectValue(attribute_name='materia_grupo.grupo',        top=5*cm, left=0.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='materia_grupo.materia.nombre',top=5*cm, left=1.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='materia_grupo.horario.lunes',top=5*cm, left=6.0*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='materia_grupo.horario.martes',top=5*cm, left=8.0*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia_grupo.grupo',            top=5*cm, left=0.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia_grupo.materia.nombre',   top=5*cm, left=1.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia_grupo.horario.lunes',    top=5*cm, left=6.0*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia_grupo.horario.martes',   top=5*cm, left=8.0*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
                 ObjectValue(attribute_name='materia_grupo.horario.miercoles',top=5*cm, left=10*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='materia_grupo.horario.jueves',top=5*cm, left=12*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='materia_grupo.horario.viernes',top=5*cm, left=14*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia_grupo.horario.jueves',   top=5*cm, left=12*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia_grupo.horario.viernes',  top=5*cm, left=14*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
                 ]
     class band_begin(ReportBand):
             height = 1*cm
@@ -34,9 +34,10 @@ class reporteDeHorario(Report):
     class band_summary(ReportBand):
             height = 1.5*cm
             elements = [
-                Label(text='Comprobante de Horario', top=0.1*cm,width=BAND_WIDTH,
+                Label(text='Comprobante de Horario', top=0.1*cm, left=6*cm,
                     style={'fontName': 'Helvetica-Bold', 'fontSize': 10, 'alignment': TA_CENTER} ),
-                     ]    
+                     ]  
+
     class band_page_header(ReportBand):
             height = 1.5*cm
             elements = [ 
