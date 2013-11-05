@@ -26,6 +26,7 @@ turno =(('Matutino','Matutino'),('Vespertino','Vespertino'))
 horas =(('7:00-8:30','7:00-8:30'),('8:30-10:00','8:30-10:00'),('10:30-12:00','10:30-12:00'),('12:00-13:30','12:00-13:30'),
     ('13:30-15:00','13:30-15:00'),('15:00-16:30','15:00-16:30'),('16:30-18:00','16:30-18:00'),('18:30-20:00','18:30-20:00'),
     ('20:00-21:00','20:00-21:00'),('--','--'))
+tipo_doc=(('Constancia', 'Constancia'),('Boleta', 'Boleta'))
 
 
 #***********************************************************************************************************
@@ -318,3 +319,49 @@ class CitaInsc(models.Model):
 	
 	class Meta:
          unique_together = (("cita","alumno"),)
+
+
+#**********************************************************************************************************
+class SaberesPrevios(models.Model):
+    Alumno=models.ForeignKey(Alumno)
+    Materia=models.ForeignKey(Materia)
+    Calificacion=models.IntegerField(null=True, blank=True)
+    class Meta:
+        unique_together = (("Alumno", "Materia"),)
+    def __str__(self):
+        return '%s %s %s' % (self.Alumno,self.Materia,self.Calificacion)
+
+
+class kardex(models.Model):
+    alumno=models.ForeignKey(Alumno)
+    materia=models.ForeignKey(Materia)
+    calificacion=models.IntegerField(null=True, blank=True)
+    alumno_grupo=models.ForeignKey(AlumnoTomaClaseEnGrupo)
+    total_creditos=models.FloatField(null=True, blank=True)
+    evaluacion=models.CharField(null=True, max_length=4)
+    class Meta:
+        unique_together=(("alumno","materia"),)
+    def __str__(self):
+        return '%s %s %s' % (self.alumno, self.materia, self.calificacion)
+
+
+class DocSolicitado(models.Model):
+    alumno=models.ForeignKey(Alumno)
+    tipo_doc=models.CharField(max_length=15, choices=tipo_doc)
+    solicitudes_hechas=models.IntegerField(default=0)
+    alumno_kardex=models.ForeignKey(kardex)
+    class Meta:
+        unique_together=(('alumno','tipo_doc'),)
+
+
+class EvaluacionProfesor(models.Model):
+    alumno=models.ForeignKey(Alumno)
+    profesor=models.ForeignKey(Profesor)
+    materia=models.ForeignKey(Materia)
+    pregunta1=models.IntegerField(null=True)
+    pregunta2=models.IntegerField(null=True)
+    pregunta3=models.IntegerField(null=True)
+    pregunta4=models.IntegerField(null=True)
+    pregunta5=models.IntegerField(null=True)
+    class Meta:
+        unique_together=(('alumno','profesor','materia'))
