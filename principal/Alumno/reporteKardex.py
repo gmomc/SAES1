@@ -57,7 +57,7 @@ class reporteDeKardex(Report):
 	class band_page_header(ReportBand):
             height = 1.5*cm
             elements = [ Image(left=0.4*cm, top=0, width=4*cm, height=5.12*cm,
-						filename= os.path.join(RUTA_PROYECTO,'..\Alumno\escom.gif')),
+						filename= os.path.join(RUTA_PROYECTO,'../Alumno/escom.gif')),
                         SystemField(expression='%(report_title)s', top=0.1*cm, left=0, width=BAND_WIDTH,
                         style={'fontName': 'Helvetica-Bold', 'fontSize': 21, 'alignment': TA_CENTER}),
 						Label(text="Escuela Superior de Cómputo", top=0.8*cm, left=0,width=BAND_WIDTH,
