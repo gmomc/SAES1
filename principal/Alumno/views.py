@@ -353,9 +353,10 @@ def cambiarPass(request):
 
 		passact=request.POST.get('passact')
 		passnuevo=request.POST.get('passnuevo')
+		conpassnuevo=request.POST.get('con-passnuevo')
 		if passact is None or passnuevo is None:
 			print "vacios"
-			notif=3
+			notif=4
 			return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
 		else:
 			acceso = authenticate(username=str(bol), password=str(passact))
@@ -363,11 +364,21 @@ def cambiarPass(request):
 			
 			if acceso is not None:
 				print "contrasena correcta"
-				usuario.set_password(passnuevo)
-				usuario.save()
+				if passnuevo==conpassnuevo:
+					print "pass nuevo coinciden"					
+					usuario.set_password(passnuevo)
+					usuario.save()
+					notif=1
+					return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
+				else:
+					print "pass nuevo no coinciden"
+					notif=3
+					return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
+				
 				print "passnuevo: "+passnuevo
-				notif=1
-				return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
+				print "confir passnuevo: "+conpassnuevo
+				
+				#return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
 	    	if acceso is None:
 	    		notif=2
 	    		print "contrasena incorrecta"

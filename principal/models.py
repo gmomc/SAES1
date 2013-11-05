@@ -336,8 +336,7 @@ class kardex(models.Model):
     alumno=models.ForeignKey(Alumno)
     materia=models.ForeignKey(Materia)
     calificacion=models.IntegerField(null=True, blank=True)
-    alumno_grupo=models.ForeignKey(AlumnoTomaClaseEnGrupo)
-    total_creditos=models.FloatField(null=True, blank=True)
+    #creditos=models.FloatField(null=True, blank=True)
     evaluacion=models.CharField(null=True, max_length=4)
     class Meta:
         unique_together=(("alumno","materia"),)
