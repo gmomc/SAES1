@@ -7,6 +7,7 @@ from reportlab.lib.units import cm
 from reportlab.lib.enums import TA_RIGHT, TA_CENTER, TA_LEFT
 from reportlab.lib.colors import navy, yellow, red, purple, orange,\
     green, white, blue
+	
 
 class reporteDeHorario(Report):
     class band_detail(DetailBand):
