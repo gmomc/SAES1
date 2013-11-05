@@ -67,7 +67,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'clave'
 
     def get_full_name(self):
-        return  self.nombre+ ' ' +self.apellidoPaterno + ' ' + self.apellidoMaterno
+        return  'Alumno : '+self.nombre+ ' ' +self.apellidoPaterno + ' ' + self.apellidoMaterno
 
     def get_full_name_prof(self):
         return 'Profesor : '+self.apellidoPaterno + ' ' + self.apellidoMaterno + ' ' +self.nombre
@@ -303,6 +303,8 @@ class AlumnoTomaClaseEnGrupo(models.Model):
     calificacion=models.IntegerField(null=True, blank=True)
     calificacionExtra=models.IntegerField(null=True, blank=True)
     periodo=models.CharField(null=True, max_length=4)
+    def get_full_alumno(self):
+		return 'Boleta: %s '%(self.alumno)
     class Meta:
         unique_together = (("alumno", "materia_grupo"),)
         ordering = ('alumno',)
