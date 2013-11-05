@@ -60,3 +60,8 @@ admin.site.register(ComentarioTutorado)
 admin.site.register(AlumnoTomaClaseEnGrupo)
 
 admin.site.register(CitaInsc)
+
+admin.site.register(SaberesPrevios)
+admin.site.register(kardex)
+admin.site.register(DocSolicitado)
+admin.site.register(EvaluacionProfesor)
