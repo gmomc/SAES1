@@ -122,28 +122,32 @@ def kardexframe(request):
 	nivel4=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=4)
 	nivel5=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=5)
 
-	for alumno in nivel1:
-		cals.append(alumno.calificacion)
-
-	for alumno in nivel2:
-		cals.append(alumno.calificacion)
-
-	for alumno in nivel3:
-		cals.append(alumno.calificacion)
-
-	for alumno in nivel4:
-		cals.append(alumno.calificacion)
-
-	for alumno in nivel5:
-		cals.append(alumno.calificacion)
-
-	promedio=sum(cals)/len(cals)
-
 	len1=len(nivel1)
 	len2=len(nivel2)
 	len3=len(nivel3)
 	len4=len(nivel4)
 	len5=len(nivel5)
+
+	if len1!=0 or len2!=0 or len3!=0 or len4!=0 or len5!=0:		
+
+		for alumno in nivel1:
+			cals.append(alumno.calificacion)
+
+		for alumno in nivel2:
+			cals.append(alumno.calificacion)
+
+		for alumno in nivel3:
+			cals.append(alumno.calificacion)
+
+		for alumno in nivel4:
+			cals.append(alumno.calificacion)
+
+		for alumno in nivel5:
+			cals.append(alumno.calificacion)
+
+		promedio=sum(cals)/len(cals)
+
+	
 
 	return render(request, 'Alumno/Alkardex-frame.html', locals(), context_instance=RequestContext(request))
 
@@ -283,7 +287,45 @@ def alumnoCalifsaberes(request):
 
 def califsaberesframe(request):
 	bol=request.user
+	alspa=SaberesPrevios.objects.filter(Alumno__cve_usuario__clave=bol)
+
 	return render(request, 'Alumno/Alcalsaberes-frame.html', locals(), context_instance=RequestContext(request))
+
+def alumnoInscEts(request):
+	bol=request.user
+	return render(request, 'Alumno/Alinscribirets.html', locals(), context_instance=RequestContext(request))
+
+def inscetsframe(request):
+	bol=request.user
+	rep=[]
+	materiasCursadas=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
+
+	for alumno in materiasCursadas:
+		if alumno.calificacion<6:
+			if alumno.calificacionExtra<6:
+				rep.append(alumno)
+
+
+	hayreprobadas=len(rep)
+
+	if hayreprobadas!=0:
+		matrep=AlumnoTomaEts.objects.filter(alumno__cve_usuario=bol)
+
+	#for alumno in rep:
+	#	cvemat=alumno.materia_grupo.materia.cve_materia
+	#	al=AlumnoTomaEts(alumno=bol,ets=cvemat)
+	#	al.save()
+
+	return render(request, 'Alumno/Alinscribirets-frame.html', locals(), context_instance=RequestContext(request))
+
+def alumnoInscSaberes(request):
+	bol=request.user
+	return render(request, 'Alumno/Alinscribirsaberes.html', locals(), context_instance=RequestContext(request))
+
+def inscsaberesframe(request):
+	bol=request.user
+	return render(request, 'Alumno/Alinscribirsaberes-frame.html', locals(), context_instance=RequestContext(request))
+
 
 def alumnoTutor(request):
 	bol=request.user

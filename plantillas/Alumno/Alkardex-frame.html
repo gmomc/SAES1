@@ -26,6 +26,14 @@
 			<h2>Kárdex</h2>
 		</div>
 
+		{%  if len1 == 0 and len2 == 0 and len3 == 0 and len4 == 0 and len5 == 0 %}
+
+		<div align="center">
+			<p class="text-info">Información no disponible</p>
+		</div>
+
+		{% else %}
+
 		<div class="form-inline" style="margin-left: 500px;">
 			<label><strong>Promedio: {{promedio}}</strong></label>
 			<label></label>
@@ -193,6 +201,7 @@
 		</div>
 	</form>
 
+	{% endif %}
 	</div>
 
 	<!--

@@ -16,6 +16,12 @@ urlpatterns = patterns('',
 	url(r'^califetsframe/$' , 'principal.Alumno.views.califetsframe'),
 	url(r'^alumnoCalifsaberes/$' , 'principal.Alumno.views.alumnoCalifsaberes'),
 	url(r'^califsaberesframe/$' , 'principal.Alumno.views.califsaberesframe'),
+
+	url(r'^alumnoInscEts/$' , 'principal.Alumno.views.alumnoInscEts'),
+	url(r'^inscetsframe/$' , 'principal.Alumno.views.inscetsframe'),
+	url(r'^alumnoInscSaberes/$' , 'principal.Alumno.views.alumnoInscSaberes'),
+	url(r'^inscsaberesframe/$' , 'principal.Alumno.views.inscsaberesframe'),
+
 	url(r'^alumnoTutor/$' , 'principal.Alumno.views.alumnoTutor'),
 	url(r'^alumnoSolicitardocs/$' , 'principal.Alumno.views.alumnoSolicitardocs'),
 	url(r'^alumnoEvaluarprofs/$' , 'principal.Alumno.views.alumnoEvaluarprofs'),
