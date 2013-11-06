@@ -114,12 +114,30 @@ def alumnoKardex(request):
 
 def kardexframe(request):
 	bol=request.user
+	cals=[]
 
 	nivel1=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=1)
 	nivel2=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=2)
 	nivel3=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=3)
 	nivel4=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=4)
 	nivel5=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=5)
+
+	for alumno in nivel1:
+		cals.append(alumno.calificacion)
+
+	for alumno in nivel2:
+		cals.append(alumno.calificacion)
+
+	for alumno in nivel3:
+		cals.append(alumno.calificacion)
+
+	for alumno in nivel4:
+		cals.append(alumno.calificacion)
+
+	for alumno in nivel5:
+		cals.append(alumno.calificacion)
+
+	promedio=sum(cals)/len(cals)
 
 	len1=len(nivel1)
 	len2=len(nivel2)
