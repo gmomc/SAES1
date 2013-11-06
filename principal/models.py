@@ -335,8 +335,8 @@ class SaberesPrevios(models.Model):
 class kardex(models.Model):
     alumno=models.ForeignKey(Alumno)
     materia=models.ForeignKey(Materia)
-    calificacion=models.IntegerField(null=True, blank=True)
-    #creditos=models.FloatField(null=True, blank=True)
+    calificacion=models.IntegerField()
+    periodo=models.CharField(max_length=6)
     evaluacion=models.CharField(null=True, max_length=4)
     class Meta:
         unique_together=(("alumno","materia"),)

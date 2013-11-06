@@ -49,26 +49,12 @@
 				<tbody>					
 					{% for alumno in nivel1 %}
 					<tr>
-						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
-						<td>{{alumno.materia_grupo.materia.nombre}}</td>
-						<td>{{alumno.periodo}}</td>
-						
-						{% if alumno.calificacionExtra > alumno.calificacion %}
-							<td>EXT</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacionExtra}}</td>
-							{% endif %}
-						{% else %}
-							<td>ORD</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacion}}</td>
-							{% endif %}
-						{% endif %}
-						</tr>
+						<td>{{alumno.materia.cve_materia}}</td>
+						<td>{{alumno.materia.nombre}}</td>
+						<td></td>
+						<td>{{alumno.evaluacion}}</td>
+						<td>{{alumno.calificacion}}</td>
+					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
@@ -94,26 +80,12 @@
 				<tbody>					
 					{% for alumno in nivel2 %}
 					<tr>
-						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
-						<td>{{alumno.materia_grupo.materia.nombre}}</td>
-						<td>{{alumno.periodo}}</td>
-						
-						{% if alumno.calificacionExtra > alumno.calificacion %}
-							<td>EXT</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacionExtra}}</td>
-							{% endif %}
-						{% else %}
-							<td>ORD</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacion}}</td>
-							{% endif %}
-						{% endif %}
-						</tr>
+						<td>{{alumno.materia.cve_materia}}</td>
+						<td>{{alumno.materia.nombre}}</td>
+						<td></td>
+						<td>{{alumno.evaluacion}}</td>
+						<td>{{alumno.calificacion}}</td>
+					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
@@ -139,26 +111,12 @@
 				<tbody>					
 					{% for alumno in nivel3 %}
 					<tr>
-						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
-						<td>{{alumno.materia_grupo.materia.nombre}}</td>
-						<td>{{alumno.periodo}}</td>
-						
-						{% if alumno.calificacionExtra > alumno.calificacion %}
-							<td>EXT</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacionExtra}}</td>
-							{% endif %}
-						{% else %}
-							<td>ORD</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacion}}</td>
-							{% endif %}
-						{% endif %}
-						</tr>
+						<td>{{alumno.materia.cve_materia}}</td>
+						<td>{{alumno.materia.nombre}}</td>
+						<td></td>
+						<td>{{alumno.evaluacion}}</td>
+						<td>{{alumno.calificacion}}</td>
+					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
@@ -184,26 +142,12 @@
 				<tbody>					
 					{% for alumno in nivel4 %}
 					<tr>
-						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
-						<td>{{alumno.materia_grupo.materia.nombre}}</td>
-						<td>{{alumno.periodo}}</td>
-						
-						{% if alumno.calificacionExtra > alumno.calificacion %}
-							<td>EXT</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacionExtra}}</td>
-							{% endif %}
-						{% else %}
-							<td>ORD</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacion}}</td>
-							{% endif %}
-						{% endif %}
-						</tr>
+						<td>{{alumno.materia.cve_materia}}</td>
+						<td>{{alumno.materia.nombre}}</td>
+						<td></td>
+						<td>{{alumno.evaluacion}}</td>
+						<td>{{alumno.calificacion}}</td>
+					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
@@ -229,26 +173,12 @@
 				<tbody>					
 					{% for alumno in nivel5 %}
 					<tr>
-						<td>{{alumno.materia_grupo.materia.cve_materia}}</td>
-						<td>{{alumno.materia_grupo.materia.nombre}}</td>
-						<td>{{alumno.periodo}}</td>
-						
-						{% if alumno.calificacionExtra > alumno.calificacion %}
-							<td>EXT</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacionExtra}}</td>
-							{% endif %}
-						{% else %}
-							<td>ORD</td>
-							{% if alumno.calificacionExtra == None%}
-							<td>-</td>
-							{% else %}
-							<td>{{alumno.calificacion}}</td>
-							{% endif %}
-						{% endif %}
-						</tr>
+						<td>{{alumno.materia.cve_materia}}</td>
+						<td>{{alumno.materia.nombre}}</td>
+						<td></td>
+						<td>{{alumno.evaluacion}}</td>
+						<td>{{alumno.calificacion}}</td>
+					</tr>
 					{% endfor %}
 				</tbody>
 			</table>

@@ -113,23 +113,19 @@ def alumnoKardex(request):
 	return render(request, 'Alumno/Alkardex.html', locals(), context_instance=RequestContext(request))
 
 def kardexframe(request):
-	bol=request.user	
-	nivel1=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=1)
-	nivel2=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=2)
-	nivel3=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=3)
-	nivel4=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=4)
-	nivel5=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=5)
+	bol=request.user
+
+	nivel1=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=1)
+	nivel2=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=2)
+	nivel3=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=3)
+	nivel4=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=4)
+	nivel5=kardex.objects.filter(alumno__cve_usuario=bol, materia__nivel=5)
 
 	len1=len(nivel1)
 	len2=len(nivel2)
 	len3=len(nivel3)
 	len4=len(nivel4)
 	len5=len(nivel5)
-	
-	if len(nivel4)==0:
-		print "es vacio"
-	else:
-		print "tiene algo"
 
 	return render(request, 'Alumno/Alkardex-frame.html', locals(), context_instance=RequestContext(request))
 
