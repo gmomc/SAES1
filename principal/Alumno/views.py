@@ -336,10 +336,114 @@ def alumnoTutor(request):
 	print dat.tutor_escolar.hora_salida
 	return render(request, 'Alumno/Altutor.html', locals(), context_instance=RequestContext(request))
 
-
 def alumnoSolicitardocs(request):
 	bol=request.user
 	return render(request, 'Alumno/Alsolicitardocs.html', locals(), context_instance=RequestContext(request))
+
+def solicitardocsframe(request):
+	bol=request.user
+
+	if 'sol_doc' in request.GET:
+		tipodoc=request.GET['documento']
+		categoria=request.GET['categoria']
+		al=Alumno.objects.get(cve_usuario__clave=bol)
+
+		try:
+			pba=DocSolicitado.objects.get(alumno__cve_usuario__clave=bol)
+		except:
+			pba=None
+
+		if pba is None:
+			print "no existe registro"
+			cuenta=DocSolicitado.objects.filter(alumno__cve_usuario__clave=bol)
+			print len(cuenta)
+
+			if tipodoc=="doc1" and categoria=="2":#Nuevo registro--Constancia oficial
+
+				cont=request.GET['pass']
+				acceso = authenticate(username=str(bol), password=str(cont))
+
+				if acceso is not None:
+					print "contrasena correcta"
+					print "constancia oficial"
+					reg=DocSolicitado(alumno=al,tipo_doc="Constancia",solicitudes_hechas=1)
+					reg.save()
+
+				if acceso is None:
+					print "Contrasena incorrecta"
+				
+				return HttpResponseRedirect('../procesarSolicitud/')
+
+			elif tipodoc=="doc2" and categoria=="2":#Nuevo registro--Boleta oficial
+
+				cont=request.GET['pass']
+				acceso = authenticate(username=str(bol), password=str(cont))
+
+				if acceso is not None:
+					print "contrasena correcta"
+					print " boleta oficial"
+					reg=DocSolicitado(alumno=al,tipo_doc="Boleta",solicitudes_hechas=1)
+					reg.save()
+				if acceso is None:
+					print "Contrasena incorrecta"
+				#reg.save()
+				return HttpResponseRedirect('../procesarSolicitud/')
+
+		else:
+			print "existe el registro"
+			cuenta=DocSolicitado.objects.filter(alumno__cve_usuario__clave=bol)
+			print len(cuenta)
+
+			if tipodoc=="doc1" and categoria=="2":#Existe registro--Constancia oficial
+
+				cont=request.GET['pass']
+				acceso = authenticate(username=str(bol), password=str(cont))
+
+				if acceso is not None:
+					print "contrasena correcta"
+					print "constancia oficial"
+					reg=DocSolicitado(alumno=al,tipo_doc="Constancia")
+					reg.save()
+
+				if acceso is None:
+					print "Contrasena incorrecta"
+				
+				return HttpResponseRedirect('../procesarSolicitud/') 
+
+			elif tipodoc=="doc2" and categoria=="2":#Existe registro--Boleta oficial
+
+				cont=request.GET['pass']
+				acceso = authenticate(username=str(bol), password=str(cont))
+
+				if acceso is not None:
+					print "contrasena correcta"
+					print " boleta oficial"
+					reg=DocSolicitado(alumno=al,tipo_doc="Boleta",solicitudes_hechas=1)
+					reg.save()
+				if acceso is None:
+					print "Contrasena incorrecta"
+				#reg.save()
+				return HttpResponseRedirect('../procesarSolicitud/')
+
+		
+
+		if tipodoc=="doc1" and categoria=="1":#Constancia no oficial
+			print "constancia no oficial"
+
+		elif tipodoc=="doc2" and categoria=="1":#Boleta no oficial
+			print "boleta no oficial"
+
+
+	return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+
+def procesarSolicitud(request):
+	bol=request.user
+	print "procesar solicitud"	
+
+	return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+
+
+
 
 def alumnoEvaluarprofs(request):
 	bol=request.user
@@ -348,6 +452,7 @@ def alumnoEvaluarprofs(request):
 def evaluarprofsframe1(request):
 	bol=request.user
 	inscrito=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
+
 	
 	#if 'ev_prof' in request.GET:
 	#	cveprof=request
@@ -362,7 +467,7 @@ def evaluarprofsframe1(request):
 
 	for alumno in inscrito:
 		cveprofs.append(alumno.materia_grupo.profesor.cve_usuario)
-		print cveprofs
+		#print cveprofs
 
 	return render(request, 'Alumno/Alevaluarprofs-frame.html', locals(), context_instance=RequestContext(request))
 
@@ -374,13 +479,30 @@ def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 		nomprof= nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
 		nommateria= alumno.materia_grupo.materia.nombre
 		grupo= alumno.materia_grupo.grupo
+
+	al=Alumno.objects.get(cve_usuario__clave=bol)
+	profe=Profesor.objects.get(cve_usuario__clave=cve_prof)
+	print "cvemat= "+idmat
+	#mate=Materia.objects.get(cve_materia=idmat)
+	#print mate
+
+	if 'fin_ev' in request.GET:
+		p1=request.GET['preg1']
+		p2=request.GET['preg2']
+		p3=request.GET['preg3']
+		p4=request.GET['preg4']
+		p5=request.GET['preg5']
+
+		#reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
+
+
+
 	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
 
 def realizarEvaluacion(request):
-	#if 'fin_ev' in request.POST:
-	if request.method == 'POST':
-		#return render(request, 'Alumno/Alevaluarprofs-frame1.html', locals(), context_instance=RequestContext(request))
-		return HttpResponseRedirect('../evaluarprofsframe1/')
+	bol=request.user
+	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
+		#return HttpResponseRedirect('../evaluarprofsframe1/')
 
 
 def alumnoHorariolabs(request):

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="{{MEDIA_URL}}js/script.js"></script>
+	<link rel="stylesheet" href="{{MEDIA_URL}}css/style.css">
+
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.min.css">
+	
+	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.min.js"></script>
+	<!--<script type="text/javascript">
+	 	$(".dropdown-toggle").dropdown-toggle
+	</script>-->
+	
+
+	<title>SAESCOM</title>
+</head>
+<body>
+
+	<div class="contenedor-iframe">
+
+		<script type="text/javascript">
+		function tipo(tipo){
+		if(tipo==2){
+			document.getElementById("oficial").style.display="block";
+		}
+		else{
+			document.getElementById("oficial").style.display="none";
+		}
+		}
+		</script>
+
+		<div class="show-content">
+
+			<div class="page-header">
+				<h2>Solicitar documentos</h2>
+			</div>
+
+			<center>
+			<form method="GET" action="../solicitardocsframe/">{% csrf_token %}
+				<label><strong>Documento:</strong></label>
+				<select id="tipoins" name="documento" style="width:auto;">
+					<option value="doc1">Constancia de estudios</option>
+					<option value="doc2">Boleta global</option>
+				</select>
+				<br>
+				<br>
+				<label><strong>Categoría:</strong></label>
+				<select id="nivel" name="categoria" style="width:auto;" onChange="tipo(this.value)">
+					<option value=1>No oficial</option>
+					<option value=2>Oficial</option>
+				</select>
+
+				<center>
+				<div class="control-group" id="oficial" style="display:none">
+					<label class="control-label" for="contraseña"><strong>Contraseña:<strong></label>
+					<div class="controls">
+					<input type="password" id="contraseña" name="pass">
+					<!--<br>
+					<br>
+					<button type="submit" class="btn">Confirmar</button>-->
+					</div>
+				</div>
+				<br>
+				<label>Te restan 2 constancias oficiales</label>
+				</center>
+
+				<br>
+				<br>
+				<!--
+				<form action="../reporteKardex/" method="POST">{% csrf_token %}	
+					<div class="alin-der">
+						<input class="btn" type="submit" name="reporteKardex" value="Imprimir Kárdex"/>
+					</div>
+				</form>-->
+
+				<input type="submit" class="btn btn-default" value="Aceptar" name="sol_doc">
+			</form>
+			</center>
+		
+				
+	</div>
+
+</div>
+</body>
+</html>

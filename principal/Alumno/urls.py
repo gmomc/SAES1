@@ -24,6 +24,8 @@ urlpatterns = patterns('',
 
 	url(r'^alumnoTutor/$' , 'principal.Alumno.views.alumnoTutor'),
 	url(r'^alumnoSolicitardocs/$' , 'principal.Alumno.views.alumnoSolicitardocs'),
+	url(r'^solicitardocsframe/$' , 'principal.Alumno.views.solicitardocsframe'),
+	url(r'^procesarSolicitud/$' , 'principal.Alumno.views.procesarSolicitud'),
 	url(r'^alumnoEvaluarprofs/$' , 'principal.Alumno.views.alumnoEvaluarprofs'),
 	#url(r'^evaluarprofsframe1/$' , 'evaluarprofsframe2', 'principal.Alumno.views.evaluarprofsframe1'),
 	url(r'^evaluarprofsframe1/$', 'principal.Alumno.views.evaluarprofsframe1'),

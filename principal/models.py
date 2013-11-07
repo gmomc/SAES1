@@ -348,9 +348,10 @@ class DocSolicitado(models.Model):
     alumno=models.ForeignKey(Alumno)
     tipo_doc=models.CharField(max_length=15, choices=tipo_doc)
     solicitudes_hechas=models.IntegerField(default=0)
-    alumno_kardex=models.ForeignKey(kardex)
-    class Meta:
-        unique_together=(('alumno','tipo_doc'),)
+    def __str__(self):
+        return '%s %s' % (self.alumno, self.tipo_doc)
+    #class Meta:
+        #unique_together=(('alumno','tipo_doc'),)
 
 
 class EvaluacionProfesor(models.Model):
