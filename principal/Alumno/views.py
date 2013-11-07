@@ -758,7 +758,7 @@ def delallData(request):
 	alu=Alumno.objects.get(cve_usuario=al)
 	p=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
 	response.write("<table id='hor-minimalist-a'><thead>")
-	response.write("<tr><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th></tr></thead><tbody></tbody></table>");
+	response.write("<tr><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th></tr></thead><tbody></tbody></table>")
 	for inscrito in p:
 		inscrito.delete()
 	if request.is_ajax():
@@ -771,7 +771,7 @@ def updateAct(request):
 	alu=Alumno.objects.get(cve_usuario=al)
 	materias=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
 	response.write("<table id='hor-minimalist-a'><thead>")
-	response.write("<tr><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th></tr></thead><tbody>");
+	response.write("<tr><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbspLunes&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspMartes&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbsp&nbspJueves&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbspViernes&nbsp&nbsp&nbsp</th><th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th></tr></thead><tbody>")
 	for mat in materias:
 		response.write("<tr><td>"+mat.materia_grupo.grupo.cve_grupo+"</td><td>"+mat.materia_grupo.materia.nombre+"</td><td>"+mat.materia_grupo.profesor.cve_usuario.nombre+" "+mat.materia_grupo.profesor.cve_usuario.apellidoPaterno+" "+mat.materia_grupo.profesor.cve_usuario.apellidoMaterno+"</td>")
 		if mat.materia_grupo.horario.cve_horario==1:
@@ -803,7 +803,7 @@ def updateAct(request):
 		if mat.materia_grupo.horario.cve_horario==14:
 				response.write("<td>20:00-21:30</td><td></td><td>20:00-21:30</td><td></td><td>20:00-21:30</td>")
 		response.write("<td><img src='../static/img/delete.gif' onClick=\"updateAct();eliminar('"+mat.materia_grupo.grupo.cve_grupo+"','"+mat.materia_grupo.materia.cve_materia+"')\"/> Eliminar</td></tr>")
-	response.write("</table><label style='position: fixed; bottom: 100px; right: 0px'>Creditos:<br> Usados: "+str(request.session['cred'])+"<br>Displonibles: "+str(60-request.session['cred'])+"</label>")
+	response.write("</table><label style='position: fixed; bottom: 150px; right: 0px'>Creditos:<br> Usados: "+str(request.session['cred'])+"<br>Displonibles: "+str(60-request.session['cred'])+"</label>")
 	if request.is_ajax():
 		return response
 def addAll(request):
