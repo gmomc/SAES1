@@ -26,6 +26,14 @@
 			<h2>Kárdex</h2>
 		</div>
 
+		{%  if len1 == 0 and len2 == 0 and len3 == 0 and len4 == 0 and len5 == 0 %}
+
+		<div align="center">
+			<p class="text-info">Kárdex no disponible</p>
+		</div>
+
+		{% else %}
+
 		<div class="form-inline" style="margin-left: 500px;">
 			<label><strong>Promedio: {{promedio}}</strong></label>
 			<label></label>
@@ -51,11 +59,7 @@
 					<tr>
 						<td>{{alumno.materia.cve_materia}}</td>
 						<td>{{alumno.materia.nombre}}</td>
-<<<<<<< HEAD
-						<td>{{periodo}}</td>
-=======
 						<td>{{alumno.periodo}}</td>
->>>>>>> 58b9ab80b0ff77363e7372c5dd5ef8209bdbf619
 						<td>{{alumno.evaluacion}}</td>
 						<td>{{alumno.calificacion}}</td>
 					</tr>
@@ -86,11 +90,7 @@
 					<tr>
 						<td>{{alumno.materia.cve_materia}}</td>
 						<td>{{alumno.materia.nombre}}</td>
-<<<<<<< HEAD
-						<td>{{periodo}}</td>
-=======
 						<td>{{alumno.periodo}}</td>
->>>>>>> 58b9ab80b0ff77363e7372c5dd5ef8209bdbf619
 						<td>{{alumno.evaluacion}}</td>
 						<td>{{alumno.calificacion}}</td>
 					</tr>
@@ -121,11 +121,7 @@
 					<tr>
 						<td>{{alumno.materia.cve_materia}}</td>
 						<td>{{alumno.materia.nombre}}</td>
-<<<<<<< HEAD
-						<td>{{periodo}}</td>
-=======
 						<td>{{alumno.periodo}}</td>
->>>>>>> 58b9ab80b0ff77363e7372c5dd5ef8209bdbf619
 						<td>{{alumno.evaluacion}}</td>
 						<td>{{alumno.calificacion}}</td>
 					</tr>
@@ -156,11 +152,7 @@
 					<tr>
 						<td>{{alumno.materia.cve_materia}}</td>
 						<td>{{alumno.materia.nombre}}</td>
-<<<<<<< HEAD
-						<td>{{periodo}}</td>
-=======
 						<td>{{alumno.periodo}}</td>
->>>>>>> 58b9ab80b0ff77363e7372c5dd5ef8209bdbf619
 						<td>{{alumno.evaluacion}}</td>
 						<td>{{alumno.calificacion}}</td>
 					</tr>
@@ -191,11 +183,7 @@
 					<tr>
 						<td>{{alumno.materia.cve_materia}}</td>
 						<td>{{alumno.materia.nombre}}</td>
-<<<<<<< HEAD
-						<td>{{periodo}}</td>
-=======
 						<td>{{alumno.periodo}}</td>
->>>>>>> 58b9ab80b0ff77363e7372c5dd5ef8209bdbf619
 						<td>{{alumno.evaluacion}}</td>
 						<td>{{alumno.calificacion}}</td>
 					</tr>
@@ -213,6 +201,7 @@
 		</div>
 	</form>
 
+	{% endif %}
 	</div>
 
 	<!--

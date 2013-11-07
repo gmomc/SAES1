@@ -19,29 +19,53 @@
 	<title>SAESCOM</title>
 </head>
 <body>
+	<div class="contenedor-iframe">
 
-			<div class="contenedor-iframe">
-				<!--AREA DE TRABAJO-->
-				<div class="page-header">
-					<h2>Calificaciones saberes previamente adquiridos</h2>
-				</div>
 
-				<table class="table table-bordered">
+		<div class="page-header">
+			<h2>Inscripción a ETS</h2>
+		</div>
+
+		{% if hayreprobadas == 0 %}
+
+		<div align="center">
+			<p class="text-info">No tienes materias reprobadas</p>
+		</div>
+
+		{% else%}
+
+		<h4>Materias a presentar:</h4>
+
+
+		<table class="table table-bordered">
 				<thead>
 					<tr>
 						<th>Clave</th>
 						<th>Materia</th>
-						<th>Calificación</th>
+						<th>Día de examen</th>
+						<th>Horario de examen</th>
 					</tr>
 				</thead>
 				<tbody>
+					{% for alumno in matrep %}
 					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td>{{ alumno.ets.cve_materia.cve_materia }}</td>
+						<td>{{ alumno.ets.cve_materia.nombre }}</td>
+						<td>{{ alumno.ets.fecha }}</td>
+						<td>{{ alumno.ets.hora }}</td>
 					</tr>
+					{% endfor %}
 				</tbody>
-			</table>
+		</table>
+
+		<div class="alin-der">
+			<button type="button" class="btn btn-default">Comprobante</button>
 		</div>
+
+		{% endif %}
+
+
+	</div>
+			
 </body>
 </html>

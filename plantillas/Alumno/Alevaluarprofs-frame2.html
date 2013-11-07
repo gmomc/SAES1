@@ -34,45 +34,42 @@
 					{% endfor %}
 				</div>
 			
-			<form action="../realizarEvaluacion/" method="POST"> {% csrf_token %}
-
+			<form action="../evaluarprofsframe2/{{cve_prof}}/{{grupo}}/{{idmat}}/" method="GET"> {% csrf_token %}
+				{{cve_prof}}, {{grupo}}, {{idmat}}
 			<p>Lee cuidadosamente y responde de acuerdo a tu criterio las siguientes preguntas:</p>
 			<p></p>
 			<div class="form-inline">
 			<label><strong>Asiste a clases</strong></label>
-			<select id="tipoasis" style="width:auto;">
-				<option>...</option>
-				<option>NUNCA</option>
-				<option>MAL O RARA VEZ</option>
-				<option>REGULAR O FRECUENTEMENTE</option>
-				<option>BIEN O CASI SIEMPRE</option>
-				<option>MUY BIEN O SIEMPRE</option>
+			<select id="tipoasis" style="width:auto;" name="preg1">
+				<option value="1">NUNCA</option>
+				<option value="2">MAL O RARA VEZ</option>
+				<option value="3">REGULAR O FRECUENTEMENTE</option>
+				<option value="4">BIEN O CASI SIEMPRE</option>
+				<option value="5">MUY BIEN O SIEMPRE</option>
 			</select>
 			</div>
 			<br>
 			
 			<div class="form-inline">
 			<label><strong>Es puntual &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></label>
-			<select id="tipopunt" style="width:auto;">
-				<option>...</option>
-				<option>NUNCA</option>
-				<option>MAL O RARA VEZ</option>
-				<option>REGULAR O FRECUENTEMENTE</option>
-				<option>BIEN O CASI SIEMPRE</option>
-				<option>MUY BIEN O SIEMPRE</option>
+			<select id="tipopunt" style="width:auto;" name="preg2">
+				<option value="1">NUNCA</option>
+				<option value="2">MAL O RARA VEZ</option>
+				<option value="3">REGULAR O FRECUENTEMENTE</option>
+				<option value="4">BIEN O CASI SIEMPRE</option>
+				<option value="5">MUY BIEN O SIEMPRE</option>
 			</select>
 			</div>
 			<br>
 
 			<div class="form-inline">
 			<label><strong>Es respetuoso(a) &nbsp&nbsp&nbsp&nbsp</strong></label>
-			<select id="tipoact" style="width:auto;">
-				<option>...</option>
-				<option>NUNCA</option>
-				<option>MAL O RARA VEZ</option>
-				<option>REGULAR O FRECUENTEMENTE</option>
-				<option>BIEN O CASI SIEMPRE</option>
-				<option>MUY BIEN O SIEMPRE</option>
+			<select id="tipoact" style="width:auto;" name="preg3">
+				<option value="1">NUNCA</option>
+				<option value="2">MAL O RARA VEZ</option>
+				<option value="3">REGULAR O FRECUENTEMENTE</option>
+				<option value="4">BIEN O CASI SIEMPRE</option>
+				<option value="5">MUY BIEN O SIEMPRE</option>
 			</select>
 			</div>
 			<br>
@@ -80,36 +77,34 @@
 			<div class="form-inline">
 			<label><strong>Del 1 al 10 como califica su dominio del temario &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 			&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></label>
-			<select id="tipocalif1" style="width:auto;">
-				<option>...</option>
-				<option>1</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
-				<option>5</option>
-				<option>6</option>
-				<option>7</option>
-				<option>8</option>
-				<option>9</option>
-				<option>10</option>
+			<select id="tipocalif1" style="width:auto;" name="preg4">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
 			</select>
 			</div>
 			<br>
 			
 			<div class="form-inline">
 			<label><strong>Del 1 al 10 como califica la capacidad de transmitir el conocimiento</strong></label>
-			<select id="tipocalif2" style="width:auto;">
-				<option>...</option>
-				<option>1</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
-				<option>5</option>
-				<option>6</option>
-				<option>7</option>
-				<option>8</option>
-				<option>9</option>
-				<option>10</option>
+			<select id="tipocalif2" style="width:auto;" name="preg5">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
 			</select>
 			</div>
 
@@ -117,7 +112,7 @@
 
 			<br>
 		<div class="alin-der">
-			<input type="submit" class="btn btn-default" value="Finalizar evaluación" name="fin_ev" >
+			<input type="submit" class="btn btn-default" value="Finalizar evaluación" name="fin_ev">
 		</div>
 
 		</form>

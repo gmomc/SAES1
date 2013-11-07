@@ -38,12 +38,13 @@
 				</thead>
 				<tbody>
 					{%  for alumno in inscrito %}
+					{{alumno.materia_grupo.materia.cve_materia}}
 					<tr>
 						<td>{{alumno.materia_grupo.grupo}}</td>
 						<td>{{alumno.materia_grupo.materia.nombre}}</td>
 						<td>{{alumno.materia_grupo.profesor.cve_usuario.nombre}} {{alumno.materia_grupo.profesor.cve_usuario.apellidoPaterno}} {{alumno.materia_grupo.profesor.cve_usuario.apellidoMaterno}}</td>
 						<!--<td><input type="submit" class="btn btn-default" value="Evaluar" name="ev_prof"></td>-->
-						<td><a href="../evaluarprofsframe2/{{alumno.materia_grupo.profesor.cve_usuario}}/{{alumno.materia_grupo.grupo}}/{{alumno.materia_grupo.materia.cve_materia}}"><button type="button" class="btn btn-default">Evaluar</a></button></td>
+						<td><a href="../evaluarprofsframe2/{{alumno.materia_grupo.profesor.cve_usuario}}/{{alumno.materia_grupo.grupo}}/{{alumno.materia_grupo.materia.cve_materia}}/"><button type="button" class="btn btn-default">Evaluar</button></a></td>
 					</tr>
 					{% endfor %}
 				</tbody>

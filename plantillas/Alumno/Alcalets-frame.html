@@ -39,7 +39,11 @@
 					<tr>
 						<td>{{ alumno.ets.cve_materia.cve_materia }}</td>
 						<td>{{ alumno.ets.cve_materia.nombre }}</td>
+						{% if alumno.calificacion == None %}
+						<td></td>
+						{% else %}
 						<td>{{ alumno.calificacion }}</td>
+						{% endif %}
 					</tr>
 					{% endfor %}
 				</tbody>

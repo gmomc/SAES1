@@ -95,7 +95,7 @@
 									</tr>
 									<tr>
 										<td><label align="right"><strong>CURP:</strong></label></td>
-										<td><input type="text" value="{{bol.curp}}" name="al_curp"></td>
+										<td><input type="text" value="{{bol.curp}}" name="al_curp" pattern="^[a-zA-Z0-9]*$" minlength="16" required></td>
 									</tr>
 									<!--<tr>
 										<td><label align="right"><strong>RFC:</strong></label></td>
@@ -254,7 +254,7 @@
 									</tr>
 									<tr>
 										<td><label align="right"><strong>Teléfono:</strong></label></td>
-										<td><input type="text" value="{{bol.Telefono_Casa}}" name="al_tel" pattern="(\+?\d[- .]*){8,10}"></td>
+										<td><input type="text" value="{{bol.Telefono_Casa}}" name="al_tel" pattern="(\+?\d[- .]*){8,10}" required></td>
 									</tr>
 									<tr>
 										<td><label align="right"><strong>Móvil:</strong></label></td>
