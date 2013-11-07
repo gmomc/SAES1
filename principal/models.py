@@ -68,7 +68,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'clave'
 
     def get_full_name(self):
-        return  'Alumno : '+self.nombre+ ' ' +self.apellidoPaterno + ' ' + self.apellidoMaterno
+        return  self.nombre+ ' ' +self.apellidoPaterno + ' ' + self.apellidoMaterno
 
     def get_full_name_prof(self):
         return 'Profesor : '+self.apellidoPaterno + ' ' + self.apellidoMaterno + ' ' +self.nombre

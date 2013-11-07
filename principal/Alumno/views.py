@@ -478,13 +478,6 @@ def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 		nomprof= nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
 		nommateria= alumno.materia_grupo.materia.nombre
 		grupo= alumno.materia_grupo.grupo
-<<<<<<< HEAD
-		idmateria=alumno.materia_grupo.materia.cve_materia
-
-	print cve_prof
-	print grupo
-	print idmateria
-=======
 		idmatt= alumno.materia_grupo.materia.cve_materia
 
 	print cve_prof
@@ -508,10 +501,6 @@ def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 	#	p5=request.GET['preg5']
 
 		#reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
-
-
->>>>>>> 807427a457f68d70a1c44cae1d40bc73ad0327ac
-
 	#return HttpResponseRedirect('../realizarEvaluacion/')
 	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
 
