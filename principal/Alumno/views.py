@@ -482,7 +482,10 @@ def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 
 	print cve_prof
 	print grupo
-	print idmat
+	print idmatt
+
+	
+
 
 	#al=Alumno.objects.get(cve_usuario__clave=bol)
 	#profe=Profesor.objects.get(cve_usuario__clave=cve_prof)
