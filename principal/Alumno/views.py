@@ -856,12 +856,11 @@ def reporteHorario(request):
     	report.generate_by(PDFGenerator, filename=response)
     	return response
 		
-		
 def reporteKardex(request):
 	if request.method=='POST':
 		bol=request.user
 		response = HttpResponse(mimetype='application/pdf')
-		objects_list =AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
+		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
     	report = reporteDeKardex(queryset=objects_list)
     	report.generate_by(PDFGenerator, filename=response)
     	return response

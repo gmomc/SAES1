@@ -20,11 +20,11 @@ class reporteDeKardex(Report):
 	class band_detail(DetailBand):
             height=0.5*cm
             elements=[
-                ObjectValue(attribute_name='materia_grupo.materia.cve_materia',top=5*cm, left=0.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='materia_grupo.materia.nombre',top=5*cm, left=1.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='periodo',top=5*cm, left=6.0*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-				ObjectValue(attribute_name='calificacionExtra',top=5*cm, left=8*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
-                ObjectValue(attribute_name='calificacion',top=5*cm, left=10*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia.cve_materia',top=5*cm, left=0.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='materia.nombre',top=5*cm, left=2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='periodo',top=5*cm, left=6.2*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+				ObjectValue(attribute_name='evaluacion',top=5*cm, left=8.3*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
+                ObjectValue(attribute_name='calificacion',top=5*cm, left=10.7*cm, style={'fontName': 'Helvetica', 'fontSize':8}),
                 ]
     
 	class band_begin(ReportBand):
@@ -64,7 +64,7 @@ class reporteDeKardex(Report):
                         style={'fontName': 'Helvetica-Bold', 'fontSize': 16, 'alignment': TA_CENTER}),
                         
 						Label(text="Clave", top=6.6*cm, left=0.2*cm, width=1.5*cm, style={'fontName': 'Helvetica-Bold', 'fontSize':8}),
-                        Label(text="Materia", top=6.6*cm, left=1.2*cm, width=1.5*cm, style={'fontName': 'Helvetica-Bold', 'fontSize':8}),
+                        Label(text="Materia", top=6.6*cm, left=2*cm, width=1.5*cm, style={'fontName': 'Helvetica-Bold', 'fontSize':8}),
                         Label(text="Periodo", top=6.6*cm, left=6.0*cm, width=1.5*cm, style={'fontName': 'Helvetica-Bold', 'fontSize':8}),
                         Label(text="Evaluación", top=6.6*cm, left=8.0*cm, width=1.5*cm, style={'fontName': 'Helvetica-Bold', 'fontSize':8}),
                         Label(text="Calificación", top=6.6*cm, left=10*cm, width=1.5*cm, style={'fontName': 'Helvetica-Bold', 'fontSize':8}),

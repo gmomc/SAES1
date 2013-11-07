@@ -338,6 +338,8 @@ class kardex(models.Model):
     calificacion=models.IntegerField()
     periodo=models.CharField(max_length=6)
     evaluacion=models.CharField(null=True, max_length=4)
+    def get_full_alumno(self):
+		return 'Boleta: %s '%(self.alumno)
     class Meta:
         unique_together=(("alumno","materia"),)
     def __str__(self):
