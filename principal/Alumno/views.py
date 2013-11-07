@@ -472,13 +472,13 @@ def evaluarprofsframe1(request):
 	return render(request, 'Alumno/Alevaluarprofs-frame.html', locals(), context_instance=RequestContext(request))
 
 def evaluarprofsframe2(request, cve_prof, grupo, idmat):
-	
 	bol=request.user
 	prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol, materia_grupo__profesor__cve_usuario__clave=cve_prof, materia_grupo__grupo__cve_grupo=grupo)
 	for alumno in prof:
 		nomprof= nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
 		nommateria= alumno.materia_grupo.materia.nombre
 		grupo= alumno.materia_grupo.grupo
+		idmatt= alumno.materia_grupo.materia.cve_materia
 
 	print cve_prof
 	print grupo
@@ -505,6 +505,7 @@ def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 
 
 	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
+
 
 def realizarEvaluacion(request):
 	bol=request.user
@@ -863,4 +864,5 @@ def reporteKardex(request):
     	report = reporteDeKardex(queryset=objects_list)
     	report.generate_by(PDFGenerator, filename=response)
     	return response
+
 
