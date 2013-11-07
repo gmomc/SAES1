@@ -29,6 +29,8 @@ urlpatterns = patterns('',
 	url(r'^alumnoEvaluarprofs/$' , 'principal.Alumno.views.alumnoEvaluarprofs'),
 	#url(r'^evaluarprofsframe1/$' , 'evaluarprofsframe2', 'principal.Alumno.views.evaluarprofsframe1'),
 	url(r'^evaluarprofsframe1/$', 'principal.Alumno.views.evaluarprofsframe1'),
+
+	#url(r'^evaluarprofsframe2/$'  , 'principal.Alumno.views.evaluarprofsframe2'),
 	url(r'^evaluarprofsframe2/(?P<cve_prof>\S+)/(?P<grupo>\S+)/(?P<idmat>\S+)/$'  , 'principal.Alumno.views.evaluarprofsframe2'),
 	url(r'^realizarEvaluacion/$', 'principal.Alumno.views.realizarEvaluacion'),
 	#url(r'^evaluarprofsframe2/$', 'principal.Alumno.views.evaluarprofsframe2'),

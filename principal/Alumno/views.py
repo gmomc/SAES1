@@ -473,10 +473,18 @@ def evaluarprofsframe1(request):
 def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 	bol=request.user
 	prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol, materia_grupo__profesor__cve_usuario__clave=cve_prof, materia_grupo__grupo__cve_grupo=grupo)
+	#prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
 	for alumno in prof:
 		nomprof= nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
 		nommateria= alumno.materia_grupo.materia.nombre
 		grupo= alumno.materia_grupo.grupo
+<<<<<<< HEAD
+		idmateria=alumno.materia_grupo.materia.cve_materia
+
+	print cve_prof
+	print grupo
+	print idmateria
+=======
 		idmatt= alumno.materia_grupo.materia.cve_materia
 
 	print cve_prof
@@ -502,32 +510,35 @@ def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 		#reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
 
 
+>>>>>>> 807427a457f68d70a1c44cae1d40bc73ad0327ac
 
+	#return HttpResponseRedirect('../realizarEvaluacion/')
 	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
 
 
 def realizarEvaluacion(request):
-	bol=request.user
-	print "hola"
+	if request.method=='GET':
+		bol=request.user
+		print "hola"
 
-	al=Alumno.objects.get(cve_usuario__clave=bol)
-	profe=Profesor.objects.get(cve_usuario__clave=cve_prof)
-	print "cvemat= "+idmat
-	mate=Materia.objects.get(cve_materia=idmat)
-	#print mate
+		al=Alumno.objects.get(cve_usuario__clave=bol)
+		profe=Profesor.objects.get(cve_usuario__clave=cve_prof)
+		print "cvemat= "+idmat
+		mate=Materia.objects.get(cve_materia=idmat)
+		#print mate
 
-	if 'fin_ev' in request.GET:
-		p1=request.GET['preg1']
-		p2=request.GET['preg2']
-		p3=request.GET['preg3']
-		p4=request.GET['preg4']
-		p5=request.GET['preg5']
+		if 'fin_ev' in request.GET:
+			p1=request.GET['preg1']
+			p2=request.GET['preg2']
+			p3=request.GET['preg3']
+			p4=request.GET['preg4']
+			p5=request.GET['preg5']
 
-		print p1
+			print p1
 
 		#reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
 
-	return render(request, 'Alumno/Alevaluarprofs-frame1.html', locals(), context_instance=RequestContext(request))
+	return render(request, 'Alumno/Alevaluarprofs-frame.html', locals(), context_instance=RequestContext(request))
 		#return HttpResponseRedirect('../evaluarprofsframe1/')
 
 
