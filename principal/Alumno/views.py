@@ -8,7 +8,6 @@ from django.http import HttpResponse
 from principal.models import *
 import time
 from django.utils import timezone
-cupo=30
   
 from reporteHorario import *
 from reporteKardex import *
@@ -472,7 +471,6 @@ def evaluarprofsframe1(request):
 	return render(request, 'Alumno/Alevaluarprofs-frame.html', locals(), context_instance=RequestContext(request))
 
 def evaluarprofsframe2(request, cve_prof, grupo, idmat):
-	
 	bol=request.user
 	prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol, materia_grupo__profesor__cve_usuario__clave=cve_prof, materia_grupo__grupo__cve_grupo=grupo)
 	#prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
@@ -480,14 +478,43 @@ def evaluarprofsframe2(request, cve_prof, grupo, idmat):
 		nomprof= nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
 		nommateria= alumno.materia_grupo.materia.nombre
 		grupo= alumno.materia_grupo.grupo
+<<<<<<< HEAD
 		idmateria=alumno.materia_grupo.materia.cve_materia
 
 	print cve_prof
 	print grupo
 	print idmateria
+=======
+		idmatt= alumno.materia_grupo.materia.cve_materia
+
+	print cve_prof
+	print grupo
+	print idmatt
+
+	
+
+
+	#al=Alumno.objects.get(cve_usuario__clave=bol)
+	#profe=Profesor.objects.get(cve_usuario__clave=cve_prof)
+	#print "cvemat= "+idmat
+	#mate=Materia.objects.get(cve_materia=idmat)
+	#print mate
+
+	#if 'fin_ev' in request.GET:
+	#	p1=request.GET['preg1']
+	#	p2=request.GET['preg2']
+	#	p3=request.GET['preg3']
+	#	p4=request.GET['preg4']
+	#	p5=request.GET['preg5']
+
+		#reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
+
+
+>>>>>>> 807427a457f68d70a1c44cae1d40bc73ad0327ac
 
 	#return HttpResponseRedirect('../realizarEvaluacion/')
 	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
+
 
 def realizarEvaluacion(request):
 	if request.method=='GET':
@@ -605,11 +632,11 @@ def getResult(request):
 	if metod==str(1):
 		matInfo=Materia.objects.get(cve_materia=clave)
 		matgrupInfo=MateriaImpartidaEnGrupo.objects.filter(materia=matInfo)
-		response.write("<tr><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th><th>Cupo</th></tr></thead><tbody>");
+		response.write("<tr><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbspLunes&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspMartes&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbsp&nbspJueves&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbspViernes&nbsp&nbsp&nbsp</th><th>Cupo</th><th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th></tr></thead><tbody>")
 		for mat in matgrupInfo:
 			inscritos=AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=mat).count()
 			if inscritos!=30:
-				response.write("<tr><td>"+mat.grupo.cve_grupo+"</td><td>"+mat.profesor.cve_usuario.nombre+" "+mat.profesor.cve_usuario.apellidoPaterno+" "+mat.profesor.cve_usuario.apellidoMaterno+"</td>")
+				response.write("<tr><td>"+mat.grupo.cve_grupo+"</td><td>"+mat.materia.nombre+"</td><td>"+mat.profesor.cve_usuario.nombre+" "+mat.profesor.cve_usuario.apellidoPaterno+" "+mat.profesor.cve_usuario.apellidoMaterno+"</td>")
 				if mat.horario.cve_horario==1:
 					response.write("<td>7:00-8:30</td><td></td><td></td><td>7:00-8:30</td><td>8:30-10:00</td>")
 				if mat.horario.cve_horario==2:
@@ -638,14 +665,14 @@ def getResult(request):
 					response.write("<td></td><td>18:30-20:00</td><td>18:30-20:00</td><td></td><td>18:30-20:00</td>")
 				if mat.horario.cve_horario==14:
 					response.write("<td>20:00-21:30</td><td></td><td>20:00-21:30</td><td></td><td>20:00-21:30</td>")
-				response.write("<td>"+str(mat.cupo-inscritos)+"</td><td><img src='../static/img/add.gif' onClick=\"updateAct();anadir('"+mat.grupo.cve_grupo+"','"+mat.materia.cve_materia+"')\" /></td></tr>")
+				response.write("<td>"+str(mat.cupo-inscritos)+"</td><td><img src='../static/img/add.gif' onClick=\"updateAct();anadir('"+mat.grupo.cve_grupo+"','"+mat.materia.cve_materia+"')\" /> Agregar</td></tr>")
 	else:
 		grupInfo=Grupo.objects.get(cve_grupo=clave)
 		grupoInfo=MateriaImpartidaEnGrupo.objects.filter(grupo=grupInfo)
-		response.write("<tr><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspLunes&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspMartes&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspJueves&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspViernes&nbsp&nbsp&nbsp&nbsp</th><th>Cupo</th></tr></thead><tbody>");
+		response.write("<tr><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbspLunes&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbspMartes&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbsp&nbspJueves&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbspViernes&nbsp&nbsp&nbsp</th><th>Cupo</th><th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th></tr></thead><tbody>")
 		for mat in grupoInfo:
 			inscritos=AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=mat).count()
-			response.write("<tr><td class>"+mat.materia.nombre+"</td><td>"+mat.profesor.cve_usuario.nombre+" "+mat.profesor.cve_usuario.apellidoPaterno+" "+mat.profesor.cve_usuario.apellidoMaterno+"</td>")
+			response.write("<tr><td>"+mat.grupo.cve_grupo+"</td><td>"+mat.materia.nombre+"</td><td>"+mat.profesor.cve_usuario.nombre+" "+mat.profesor.cve_usuario.apellidoPaterno+" "+mat.profesor.cve_usuario.apellidoMaterno+"</td>")
 			if mat.horario.cve_horario==1:
 				response.write("<td>7:00-8:30</td><td></td><td></td><td>7:00-8:30</td><td>8:30-10:00</td>")
 			if mat.horario.cve_horario==2:
@@ -674,7 +701,7 @@ def getResult(request):
 				response.write("<td></td><td>18:30-20:00</td><td>18:30-20:00</td><td></td><td>18:30-20:00</td>")
 			if mat.horario.cve_horario==14:
 				response.write("<td>20:00-21:30</td><td></td><td>20:00-21:30</td><td></td><td>20:00-21:30</td>")
-			response.write("<td>"+str(mat.cupo-inscritos)+"</td><td><img src='../static/img/add.gif' onClick=\"updateAct();anadir('"+mat.grupo.cve_grupo+"','"+mat.materia.cve_materia+"')\" /></td></tr>")
+			response.write("<td>"+str(mat.cupo-inscritos)+"</td><td><img src='../static/img/add.gif' onClick=\"updateAct();anadir('"+mat.grupo.cve_grupo+"','"+mat.materia.cve_materia+"')\" /> Agregar</td></tr>")
 	response.write("</tbody></table>")
 	if request.is_ajax():
 		return response
@@ -702,13 +729,15 @@ def insertData(request):
 			repeat=AlumnoTomaClaseEnGrupo.objects.get(materia_grupo__horario=p.materia_grupo.horario,alumno=alu)
 		except:
 			try:
-				repeat_materia=AlumnoTomaClaseEnGrupo.objects.get(alumno=alu,materia_grupo__materia=materInfo)
+				repeat_materia=AlumnoTomaClaseEnGrupo.objects.get(alumno=alu,materia_grupo__materia=matInfo)
 			except:
 				p.save()
 				request.session['cred']=request.session['cred']+matInfo.creditos
 				response.write("La materia "+p.materia_grupo.materia.nombre+" se ha agregado correctamente")
 				if request.is_ajax():
 					return response
+			response.write("Ya has inscrito la materia "+repeat_materia.materia_grupo.materia.nombre+" en el grupo "+repeat_materia.materia_grupo.grupo.cve_grupo);
+			return response
 		response.write("La materia "+matInfo.nombre+" se traslapa con "+repeat.materia_grupo.materia.nombre+"  que ya inscribiste en el grupo "+repeat.materia_grupo.grupo.cve_grupo+"");
 		return response
 	response.write("Ya has inscrito "+pinsc.materia_grupo.materia.nombre+" en el grupo "+pinsc.materia_grupo.grupo.cve_grupo+"")
@@ -753,9 +782,9 @@ def updateAct(request):
 	alu=Alumno.objects.get(cve_usuario=al)
 	materias=AlumnoTomaClaseEnGrupo.objects.filter(alumno=alu)
 	response.write("<table id='hor-minimalist-a'><thead>")
-	response.write("<tr><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th></tr></thead><tbody>");
+	response.write("<tr><th scope='col'>Grupo</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMateria&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProfesor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th scope='col'>&nbsp&nbspLunes&nbsp&nbsp</th><th scope='col'>&nbsp&nbspMartes&nbsp&nbsp</th><th scope='col'>&nbspMiercoles&nbsp</th><th scope='col'>&nbsp&nbspJueves&nbsp&nbsp</th><th scope='col'>&nbsp&nbspViernes&nbsp&nbsp</th></tr></thead><tbody>");
 	for mat in materias:
-		response.write("<tr><td>"+mat.materia_grupo.materia.nombre+"</td><td>"+mat.materia_grupo.grupo.cve_grupo+"</td><td>"+mat.materia_grupo.profesor.cve_usuario.nombre+" "+mat.materia_grupo.profesor.cve_usuario.apellidoPaterno+" "+mat.materia_grupo.profesor.cve_usuario.apellidoMaterno+"</td>")
+		response.write("<tr><td>"+mat.materia_grupo.grupo.cve_grupo+"</td><td>"+mat.materia_grupo.materia.nombre+"</td><td>"+mat.materia_grupo.profesor.cve_usuario.nombre+" "+mat.materia_grupo.profesor.cve_usuario.apellidoPaterno+" "+mat.materia_grupo.profesor.cve_usuario.apellidoMaterno+"</td>")
 		if mat.materia_grupo.horario.cve_horario==1:
 			response.write("<td>7:00-8:30</td><td></td><td></td><td>7:00-8:30</td><td>8:30-10:00</td>")
 		if mat.materia_grupo.horario.cve_horario==2:
@@ -784,8 +813,8 @@ def updateAct(request):
 			response.write("<td></td><td>18:30-20:00</td><td>18:30-20:00</td><td></td><td>18:30-20:00</td>")
 		if mat.materia_grupo.horario.cve_horario==14:
 				response.write("<td>20:00-21:30</td><td></td><td>20:00-21:30</td><td></td><td>20:00-21:30</td>")
-		response.write("<td><img src='../static/img/delete.gif' onClick=\"updateAct();eliminar('"+mat.materia_grupo.grupo.cve_grupo+"','"+mat.materia_grupo.materia.cve_materia+"')\" /></td></tr>")
-	response.write("</table><br>Creditos usados: "+str(request.session['cred']))
+		response.write("<td><img src='../static/img/delete.gif' onClick=\"updateAct();eliminar('"+mat.materia_grupo.grupo.cve_grupo+"','"+mat.materia_grupo.materia.cve_materia+"')\"/> Eliminar</td></tr>")
+	response.write("</table><label style='position: fixed; bottom: 100px; right: 0px'>Creditos:<br> Usados: "+str(request.session['cred'])+"<br>Displonibles: "+str(60-request.session['cred'])+"</label>")
 	if request.is_ajax():
 		return response
 def addAll(request):
@@ -847,4 +876,5 @@ def reporteKardex(request):
     	report = reporteDeKardex(queryset=objects_list)
     	report.generate_by(PDFGenerator, filename=response)
     	return response
+
 
