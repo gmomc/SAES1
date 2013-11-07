@@ -828,6 +828,7 @@ def reporteHorario(request):
     	report.generate_by(PDFGenerator, filename=response)
     	return response
 		
+		
 def reporteKardex(request):
 	if request.method=='POST':
 		bol=request.user
