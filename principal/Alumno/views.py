@@ -11,6 +11,7 @@ from django.utils import timezone
   
 from reporteHorario import *
 from reporteKardex import *
+from reporteConstancia import *
 from geraldo.generators import PDFGenerator
 # Create your views here.
 def alumnoInicio(request):
@@ -862,6 +863,16 @@ def reporteKardex(request):
 		response = HttpResponse(mimetype='application/pdf')
 		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
     	report = reporteDeKardex(queryset=objects_list)
+    	report.generate_by(PDFGenerator, filename=response)
+    	return response
+		
+		
+def reporteConstancia(request):
+	if request.method=='POST':
+		bol=request.user
+		response = HttpResponse(mimetype='application/pdf')
+		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
+    	report = reporteDeConstancia(queryset=objects_list)
     	report.generate_by(PDFGenerator, filename=response)
     	return response
 
