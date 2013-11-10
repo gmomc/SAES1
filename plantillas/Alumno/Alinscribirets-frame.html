@@ -25,17 +25,17 @@
 		<div class="page-header">
 			<h2>Inscripción a ETS</h2>
 		</div>
+	<form action="../reporteETS/" method="POST">{% csrf_token %}	
 
 		{% if hayreprobadas == 0 %}
 
 		<div align="center">
 			<p class="text-info">No tienes materias reprobadas</p>
 		</div>
+		
 
 		{% else%}
-
 		<h4>Materias a presentar:</h4>
-
 
 		<table class="table table-bordered">
 				<thead>
@@ -57,15 +57,13 @@
 					{% endfor %}
 				</tbody>
 		</table>
-
 		<div class="alin-der">
-			<button type="button" class="btn btn-default">Comprobante</button>
+			<input class="btn" type="submit" name="reporteETS" value="Comprobante"/>
 		</div>
 
 		{% endif %}
-
-
 	</div>
-			
+	</form>
+	
 </body>
 </html>

@@ -204,26 +204,5 @@
 	{% endif %}
 	</div>
 
-	<!--
-	def kardexframe(request):
-	bol=request.user	
-	nivel1=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=1)
-	nivel2=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=2)
-	nivel3=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=3)
-	nivel4=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=4)
-	nivel5=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario=bol, materia_grupo__materia__nivel=5)
-
-	len1=len(nivel1)
-	len2=len(nivel2)
-	len3=len(nivel3)
-	len4=len(nivel4)
-	len5=len(nivel5)
-
-	return render(request, 'Alumno/Alkardex-frame.html', locals(), context_instance=RequestContext(request))
-	-->
-	
-
-
-
 </body>
 </html>

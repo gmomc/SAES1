@@ -211,9 +211,6 @@ class MateriaImpartidaEnGrupo(models.Model):
 
 
 
-
-
-
 #***********************************************************************************************************
 
 class Alumno(models.Model):
@@ -229,8 +226,6 @@ class Alumno(models.Model):
 
 
 #***********************************************************************************************************
-
-
 
 
 #***********************************************************************************************************
@@ -277,6 +272,9 @@ class AlumnoTomaEts(models.Model):
     alumno = models.ForeignKey(Alumno)
     ets = models.ForeignKey(Ets)
     calificacion = models.IntegerField(null=True, blank=True)
+	
+    def get_full_alumno(self):
+		return 'Boleta: %s '%(self.alumno)
 
     class Meta:
         unique_together = (("alumno", "ets"),)
