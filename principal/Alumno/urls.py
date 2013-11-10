@@ -51,5 +51,5 @@ urlpatterns = patterns('',
 	url(r'^Alcita/$' , 'principal.Alumno.views.cita'),
 	url(r'^reporteHorario/$' , 'principal.Alumno.views.reporteHorario'),
 	url(r'^reporteKardex/$' , 'principal.Alumno.views.reporteKardex'),
-
+	url(r'^reporteConstancia/$' , 'principal.Alumno.views.reporteConstancia'),
 )

@@ -870,10 +870,8 @@ def reporteKardex(request):
 def reporteConstancia(request):
 	if request.method=='POST':
 		bol=request.user
+		alumnos =kardex.objects.filter(alumno__cve_usuario__clave=bol)
 		response = HttpResponse(mimetype='application/pdf')
-		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
-    	report = reporteDeConstancia(queryset=objects_list)
-    	report.generate_by(PDFGenerator, filename=response)
-    	return response
-
-
+		report = reporteDeConstancia(queryset=alumnos)
+		report.generate_by(PDFGenerator, filename=response)
+		return response

@@ -40,7 +40,7 @@
 			</div>
 
 			<center>
-			<form method="GET" action="../solicitardocsframe/">{% csrf_token %}
+			<form action="../reporteConstancia/" method="POST">{% csrf_token %}
 				<label><strong>Documento:</strong></label>
 				<select id="tipoins" name="documento" style="width:auto;">
 					<option value="doc1">Constancia de estudios</option>
@@ -76,7 +76,6 @@
 						<input class="btn" type="submit" name="reporteKardex" value="Imprimir Kárdex"/>
 					</div>
 				</form>-->
-
 				<input type="submit" class="btn btn-default" value="Aceptar" name="sol_doc">
 			</form>
 			</center>
