@@ -23,8 +23,8 @@
 	<div class="contenedor-iframe">
 	
 		<script type="text/javascript">
-		function tipo(tipo){
-		if(tipo=='of'){
+		function ttipo(valor){
+		if(valor=='of'){
 			document.getElementById("oficial").style.display="block";
 		}
 		else{
@@ -50,7 +50,7 @@
 				<br>
 				
 				<label><strong>Categoría:</strong></label>
-				<select id="nivel" name="categoria" style="width:auto;" onChange="tipo(this.value)">
+				<select id="nivel" name="categoria" style="width:auto;" onChange="ttipo(this.value)">
 					<option value="no">No oficial</option>
 					<option value="of">Oficial</option>
 				</select>
@@ -68,7 +68,7 @@
 				<br>
 				<br>
 				
-				<input type="submit" class="btn btn-default" value="Acepta" name="sol_doc" />
+				<input type="submit" class="btn btn-default" value="Aceptar" name="sol_doc" />
 			</center>
 		</form>
 				

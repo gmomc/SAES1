@@ -887,10 +887,12 @@ def reporteConstancia(request):
 		response = HttpResponse(mimetype='application/pdf')
 		if tipo=='const' and categoria=='no':
 			report = reporteDeConstancia(queryset=objects_list)
+		
 		elif tipo=='bol' and categoria=='no':
 			report= reporteDeBoleta(queryset=objects_list)
+			
 		else:
-			print ("nada")
+			return HttpResponseRedirect('../solicitardocsframe/')
 		report.generate_by(PDFGenerator, filename=response)
 		return response
 		
