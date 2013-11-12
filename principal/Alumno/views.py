@@ -11,6 +11,7 @@ from django.utils import timezone
   
 from reporteHorario import *
 from reporteKardex import *
+from reporteBoleta import *
 from reporteConstancia import *
 from reporteETS import *
 from geraldo.generators import PDFGenerator
@@ -867,13 +868,29 @@ def reporteKardex(request):
     	report.generate_by(PDFGenerator, filename=response)
     	return response
 		
-		
-def reporteConstancia(request):
+def reporteBoleta(request):
 	if request.method=='POST':
 		bol=request.user
-		alumnos =kardex.objects.filter(alumno__cve_usuario__clave=bol)
 		response = HttpResponse(mimetype='application/pdf')
-		report = reporteDeConstancia(queryset=alumnos)
+		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
+    	report = reporteDeBoleta(queryset=objects_list)
+    	report.generate_by(PDFGenerator, filename=response)
+    	return response
+		
+		
+def reporteConstancia(request):
+	if request.method=='GET':
+		bol=request.user
+		tipo=request.GET['tipo']
+		categoria=request.GET['categoria']
+		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
+		response = HttpResponse(mimetype='application/pdf')
+		if tipo=='const' and categoria=='no':
+			report = reporteDeConstancia(queryset=objects_list)
+		elif tipo=='bol' and categoria=='no':
+			report= reporteDeBoleta(queryset=objects_list)
+		else:
+			print ("nada")
 		report.generate_by(PDFGenerator, filename=response)
 		return response
 		

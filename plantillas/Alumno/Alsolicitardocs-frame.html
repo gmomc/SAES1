@@ -21,10 +21,10 @@
 <body>
 
 	<div class="contenedor-iframe">
-
+	
 		<script type="text/javascript">
 		function tipo(tipo){
-		if(tipo==2){
+		if(tipo=='of'){
 			document.getElementById("oficial").style.display="block";
 		}
 		else{
@@ -40,20 +40,20 @@
 			</div>
 
 			<center>
-			<form action="../reporteConstancia/" method="POST">{% csrf_token %}
+			<form action="/alumno/reporteConstancia/" method="GET">{% csrf_token %}
 				<label><strong>Documento:</strong></label>
-				<select id="tipoins" name="documento" style="width:auto;">
-					<option value=3>Constancia de estudios</option>
-					<option value=4>Boleta global</option>
+				<select id="doc" name="tipo" style="width:auto;">
+					<option value="bol">Boleta global</option>
+					<option value="const">Constancia de estudios</option>
 				</select>
 				<br>
 				<br>
+				
 				<label><strong>Categoría:</strong></label>
 				<select id="nivel" name="categoria" style="width:auto;" onChange="tipo(this.value)">
-					<option value=1>No oficial</option>
-					<option value=2>Oficial</option>
+					<option value="no">No oficial</option>
+					<option value="of">Oficial</option>
 				</select>
-
 				<center>
 				<div class="control-group" id="oficial" style="display:none">
 					<label class="control-label" for="contraseña"><strong>Contraseña:<strong></label>
@@ -67,11 +67,10 @@
 
 				<br>
 				<br>
-
-				<input type="submit" class="btn btn-default" value="Aceptar" name="sol_doc">
-			</form>
+				
+				<input type="submit" class="btn btn-default" value="Acepta" name="sol_doc" />
 			</center>
-		
+		</form>
 				
 	</div>
 
