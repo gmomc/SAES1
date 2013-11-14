@@ -94,7 +94,7 @@ def actualizarInfo(request):
 		tel=request.POST.get('al_tel')
 		movil=request.POST.get('al_movil')
 		email=request.POST.get('al_email')
-		Usuario.objects.filter(clave=bol).update(calle=calle, num=num, colonia=colonia, cp=cp, estado=edo, municipio_o_delegacion=delmun, Telefono_Casa=tel, Telefono_Celular=movil, email_personal=email)
+		Usuario.objects.filter(clave=bol).update(calle=calle, num=num, colonia=colonia, cp=cp, estado=edo, municipio_o_delegacion=delmun, Telefono_Casa=tel, Telefono_Celular=movil, email_institucional=email)
 		aux=0
 		notif=1
 		return render_to_response('Alumno/Aldatosgenerales.html', locals(), context_instance=RequestContext(request))
