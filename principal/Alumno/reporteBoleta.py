@@ -52,7 +52,7 @@ class reporteDeBoleta(Report):
 			Label(text='Plan de estudios: 09', top=0*cm, left=13*cm, style={'fontName': 'Helvetica-bold', 'fontSize':8}),
 			Label(text='Licenciatura en: Ingeniería en sistemas computacionales', top=0.5*cm, left=2*cm, width=9*cm, style={'fontName': 'Helvetica-bold', 'fontSize':8}),
 			Label(text='Último grupo: ', top=0.5*cm, left=13*cm, style={'fontName': 'Helvetica-bold', 'fontSize':8}),
-			#ObjectValue(attribute_name='',top=0.5*cm, left=15*cm, style={'fontName': 'Helvetica-bold', 'fontSize':8}),
+			#ObjectValue(attribute_name='materia',top=0.5*cm, left=15*cm, style={'fontName': 'Helvetica-bold', 'fontSize':8}),
 				]	  
 			borders = {'bottom': Line(stroke_width=2)}
     
