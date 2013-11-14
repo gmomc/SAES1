@@ -346,7 +346,7 @@ def solicitardocsframe(request):
 	bol=request.user
 
 	if 'sol_doc' in request.GET:
-		tipodoc=request.GET['documento']
+		tipodoc=request.GET['tipo']
 		categoria=request.GET['categoria']
 		al=Alumno.objects.get(cve_usuario__clave=bol)
 
@@ -360,7 +360,7 @@ def solicitardocsframe(request):
 			cuenta=DocSolicitado.objects.filter(alumno__cve_usuario__clave=bol)
 			print len(cuenta)
 
-			if tipodoc=="doc1" and categoria=="2":#Nuevo registro--Constancia oficial
+			if tipodoc=="cons" and categoria=="of":#Nuevo registro--Constancia oficial
 
 				cont=request.GET['pass']
 				acceso = authenticate(username=str(bol), password=str(cont))
@@ -376,7 +376,7 @@ def solicitardocsframe(request):
 				
 				return HttpResponseRedirect('../procesarSolicitud/')
 
-			elif tipodoc=="doc2" and categoria=="2":#Nuevo registro--Boleta oficial
+			elif tipodoc=="bol" and categoria=="of":#Nuevo registro--Boleta oficial
 
 				cont=request.GET['pass']
 				acceso = authenticate(username=str(bol), password=str(cont))
@@ -396,7 +396,7 @@ def solicitardocsframe(request):
 			cuenta=DocSolicitado.objects.filter(alumno__cve_usuario__clave=bol)
 			print len(cuenta)
 
-			if tipodoc=="doc1" and categoria=="2":#Existe registro--Constancia oficial
+			if tipodoc=="cons" and categoria=="of":#Existe registro--Constancia oficial
 
 				cont=request.GET['pass']
 				acceso = authenticate(username=str(bol), password=str(cont))
@@ -412,7 +412,7 @@ def solicitardocsframe(request):
 				
 				return HttpResponseRedirect('../procesarSolicitud/') 
 
-			elif tipodoc=="doc2" and categoria=="2":#Existe registro--Boleta oficial
+			elif tipodoc=="bol" and categoria=="of":#Existe registro--Boleta oficial
 
 				cont=request.GET['pass']
 				acceso = authenticate(username=str(bol), password=str(cont))
@@ -429,10 +429,10 @@ def solicitardocsframe(request):
 
 		
 
-		if tipodoc=="doc1" and categoria=="1":#Constancia no oficial
+		if tipodoc=="cons" and categoria=="no":#Constancia no oficial
 			print "constancia no oficial"
 
-		elif tipodoc=="doc2" and categoria=="1":#Boleta no oficial
+		elif tipodoc=="bol" and categoria=="no":#Boleta no oficial
 			print "boleta no oficial"
 
 
@@ -441,7 +441,6 @@ def solicitardocsframe(request):
 def procesarSolicitud(request):
 	bol=request.user
 	print "procesar solicitud"	
-
 	return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
 
 
