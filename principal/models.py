@@ -363,5 +363,7 @@ class EvaluacionProfesor(models.Model):
     pregunta3=models.IntegerField(null=True)
     pregunta4=models.IntegerField(null=True)
     pregunta5=models.IntegerField(null=True)
-    class Meta:
-        unique_together=(('alumno','profesor','materia'))
+    #class Meta:
+    #   unique_together=(('alumno','profesor','materia'))
+    def __str__(self):
+        return '%s %s %s' % (self.alumno, self.profesor, self.materia)

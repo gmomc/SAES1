@@ -444,8 +444,6 @@ def procesarSolicitud(request):
 	return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
 
 
-
-
 def alumnoEvaluarprofs(request):
 	bol=request.user
 	return render(request, 'Alumno/Alevaluarprofs.html', locals(), context_instance=RequestContext(request))
@@ -453,84 +451,78 @@ def alumnoEvaluarprofs(request):
 def evaluarprofsframe1(request):
 	bol=request.user
 	inscrito=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
+	#evaluados=EvaluacionProfesor.objects.filter(alumno__cve_usuario__clave=bol)
+	#print len(evaluados)
 
+	lista_profs=[]
 	
-	#if 'ev_prof' in request.GET:
-	#	cveprof=request
-	cveprofs=[]
-	#aux=[]
-	#result=[]
-	#for alumno in inscrito:
-	#	prof=alumno.materia_grupo.profesor
-	#	if prof not in aux:
-	#		aux.append(prof)
-	#		result.append(prof)
-
 	for alumno in inscrito:
-		cveprofs.append(alumno.materia_grupo.profesor.cve_usuario)
-		#print cveprofs
+		cvemateria=alumno.materia_grupo.materia.cve_materia
+		cveprof=alumno.materia_grupo.profesor.cve_usuario.clave
+		if(esta_evaluado(bol, cvemateria, cveprof)):
+			print "profesar evaluado"
+		else:
+			lista_profs.append(alumno)
+
+	#print lista_profs
+	no_evaluados=len(lista_profs)
+
 
 	return render(request, 'Alumno/Alevaluarprofs-frame.html', locals(), context_instance=RequestContext(request))
 
-def evaluarprofsframe2(request, cve_prof, grupo, idmat):
-	bol=request.user
-	prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol, materia_grupo__profesor__cve_usuario__clave=cve_prof, materia_grupo__grupo__cve_grupo=grupo)
-	#prof=AlumnoTomaClaseEnGrupo.objects.filter(alumno__cve_usuario__clave=bol)
-	for alumno in prof:
-		nomprof= nombreCompleto(alumno.materia_grupo.profesor.cve_usuario)
-		nommateria= alumno.materia_grupo.materia.nombre
-		grupo= alumno.materia_grupo.grupo
-		idmatt= alumno.materia_grupo.materia.cve_materia
-
-	print cve_prof
-	print grupo
-	print idmatt
-
+def esta_evaluado(bol, cvemat, cveprof):
+	check=0
+	profev=EvaluacionProfesor.objects.filter(alumno__cve_usuario__clave=bol)
 	
+	for alumno in profev:
+		if alumno.profesor.cve_usuario.clave==cveprof and alumno.materia.cve_materia==cvemat:
+			check=1
+
+	if check == 1:
+		return True
+	else:
+		return False
 
 
-	#al=Alumno.objects.get(cve_usuario__clave=bol)
-	#profe=Profesor.objects.get(cve_usuario__clave=cve_prof)
-	#print "cvemat= "+idmat
-	#mate=Materia.objects.get(cve_materia=idmat)
-	#print mate
 
-	#if 'fin_ev' in request.GET:
-	#	p1=request.GET['preg1']
-	#	p2=request.GET['preg2']
-	#	p3=request.GET['preg3']
-	#	p4=request.GET['preg4']
-	#	p5=request.GET['preg5']
+def evaluarprofsframe2(request,idmat):
+	bol=request.user
 
-		#reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
-	#return HttpResponseRedirect('../realizarEvaluacion/')
+	print bol
+	print idmat
+	datosprof=AlumnoTomaClaseEnGrupo.objects.get(alumno__cve_usuario__clave=bol, materia_grupo__materia__cve_materia=idmat)
+
+	name=nombreCompleto(datosprof.materia_grupo.profesor.cve_usuario)
+	group=datosprof.materia_grupo.grupo
+	nameMat=datosprof.materia_grupo.materia.nombre
+
 	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
 
 
-def realizarEvaluacion(request):
-	if request.method=='GET':
-		bol=request.user
-		print "hola"
+def realizarEvaluacion(request,idmat):
+	bol=request.user
+	datosprof=AlumnoTomaClaseEnGrupo.objects.get(alumno__cve_usuario__clave=bol, materia_grupo__materia__cve_materia=idmat)
+	idprof=datosprof.materia_grupo.profesor.cve_usuario.clave
 
-		al=Alumno.objects.get(cve_usuario__clave=bol)
-		profe=Profesor.objects.get(cve_usuario__clave=cve_prof)
-		print "cvemat= "+idmat
-		mate=Materia.objects.get(cve_materia=idmat)
-		#print mate
+	al=Alumno.objects.get(cve_usuario__clave=bol)
+	profe=Profesor.objects.get(cve_usuario__clave=idprof)
+	mat=Materia.objects.get(cve_materia=idmat)
 
-		if 'fin_ev' in request.GET:
-			p1=request.GET['preg1']
-			p2=request.GET['preg2']
-			p3=request.GET['preg3']
-			p4=request.GET['preg4']
-			p5=request.GET['preg5']
+	if 'fin_ev' in request.GET:
+		#print "entraste a realizarEvaluacion"
+		flagep=1
+		p1=request.GET['preg1']
+		p2=request.GET['preg2']
+		p3=request.GET['preg3']
+		p4=request.GET['preg4']
+		p5=request.GET['preg5']
 
-			print p1
+		reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
+		reg.save()
 
-		#reg=EvaluacionProfesor(alumno=al,profesor=profe,materia=mat,pregunta1=p1,pregunta2=p2,pregunta3=p3,pregunta4=p4,pregunta5=p5)
+	return render(request, 'Alumno/Alevaluarprofs-frame2.html', locals(), context_instance=RequestContext(request))
 
-	return render(request, 'Alumno/Alevaluarprofs-frame.html', locals(), context_instance=RequestContext(request))
-		#return HttpResponseRedirect('../evaluarprofsframe1/')
+
 
 
 def alumnoHorariolabs(request):

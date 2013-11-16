@@ -2,15 +2,21 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<script type="text/javascript" src="{{MEDIA_URL}}js/script.js"></script>
-	<link rel="stylesheet" href="{{MEDIA_URL}}css/style.css">
-
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.min.css">
+
 	
-	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.min.js"></script>
+	<script src="{{MEDIA_URL}}js/jquery.js"></script>
+<script src="{{MEDIA_URL}}js/script.js"></script>
+<script src="{{MEDIA_URL}}js/bootstrap.js"></script>
+<script src="{{MEDIA_URL}}js/bootstrap-dropdown.js"></script>
+
+<script src="{{MEDIA_URL}}js/bootbox.min.js"></script>
+<script src="{{MEDIA_URL}}js/horario.js"></script>
+<script src="{{MEDIA_URL}}js/formularios.js"></script>
+
+<link rel="stylesheet" href="{{MEDIA_URL}}css/bootstrap.css">
+<link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
+<link rel="stylesheet" href="{{STATIC_URL}}css/inc.css">
 	<!--<script type="text/javascript">
 	 	$(".dropdown-toggle").dropdown-toggle
 	</script>-->
@@ -26,15 +32,24 @@
 					<h2>Evaluación de profesores</h2>
 				</div>
 
+
+				{% if flagep == 1 %}
+				<script>
+					bootbox.alert("Evaluación correcta", function(){window.location='../../evaluarprofsframe1/'})
+				</script>
+				{% endif %}				
+
+
 				<div class="form-inline">
-					{% for alumno in prof%}
-					<label><strong>Profesor: {{nomprof}}</strong></label>
-					<label style="margin-left:70px;"><strong>Materia: {{nommateria}}</strong></label>
-					<label style="margin-left:70px;"><strong>Grupo: {{grupo}}</strong></label>
-					{% endfor %}
+					
+					<label><strong>Profesor: {{name}}</strong></label>
+					<label style="margin-left:70px;"><strong>Materia: {{nameMat}}</strong></label>
+					<label style="margin-left:70px;"><strong>Grupo: {{group}}</strong></label>
+					
 				</div>
+
 			
-			<form action="../realizarEvaluacion/" method="GET"> {% csrf_token %}
+			<form action="../../realizarEvaluacion/{{idmat}}/" method="GET"> {% csrf_token %}
 				
 			<p>Lee cuidadosamente y responde de acuerdo a tu criterio las siguientes preguntas:</p>
 			<p></p>
