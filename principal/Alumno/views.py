@@ -1,4 +1,5 @@
 # Create your views here.
+# Create your views here.
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -548,14 +549,14 @@ def cambiarPass(request):
 	bol=request.user
 
 	if request.method=='POST':
-
 		passact=request.POST.get('passact')
 		passnuevo=request.POST.get('passnuevo')
 		conpassnuevo=request.POST.get('con-passnuevo')
-		if passact is None or passnuevo is None:
+		if passact=="" or passnuevo=="" or conpassnuevo=="":
 			print "vacios"
 			notif=4
 			return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
+
 		else:
 			acceso = authenticate(username=str(bol), password=str(passact))
 			usuario=Usuario.objects.get(clave=bol)
@@ -576,11 +577,10 @@ def cambiarPass(request):
 				print "passnuevo: "+passnuevo
 				print "confir passnuevo: "+conpassnuevo
 				
-				#return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))
 	    	if acceso is None:
 	    		notif=2
 	    		print "contrasena incorrecta"
-	    		return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))			
+	    		return render(request, 'Alumno/Alcambiarpass.html', locals(), context_instance=RequestContext(request))	
 	
 
 def alumnoinscsem(request):
