@@ -289,8 +289,8 @@ def alumnoCalifsaberes(request):
 
 def califsaberesframe(request):
 	bol=request.user
-	alspa=SaberesPrevios.objects.filter(Alumno__cve_usuario__clave=bol)
-
+	calspa=SaberesPrevios.objects.filter(Alumno__cve_usuario__clave=bol)
+	regcalspa=len(calspa)
 	return render(request, 'Alumno/Alcalsaberes-frame.html', locals(), context_instance=RequestContext(request))
 
 def alumnoInscEts(request):
@@ -322,11 +322,61 @@ def inscetsframe(request):
 
 def alumnoInscSaberes(request):
 	bol=request.user
+
 	return render(request, 'Alumno/Alinscribirsaberes.html', locals(), context_instance=RequestContext(request))
 
 def inscsaberesframe(request):
 	bol=request.user
+	mat_disponibles=[]
+	materias=Materia.objects.all().order_by('nivel')
+	registrospa=SaberesPrevios.objects.filter(Alumno__cve_usuario__clave=bol)
+	regs=len(registrospa)
+
+	for nombre in materias:
+		cvemat=nombre.cve_materia
+		if (ya_cursada(bol, cvemat)):
+			print "mat cursada: "+nombre.nombre
+		elif nombre.tipo != "Optativa":
+			mat_disponibles.append(nombre)
+		else:
+			print "es Optativa"
+			
 	return render(request, 'Alumno/Alinscribirsaberes-frame.html', locals(), context_instance=RequestContext(request))
+
+def ya_cursada(bol, cvemat):
+	alkardex=kardex.objects.filter(alumno__cve_usuario__clave=bol)
+	check=0
+	for alumno in alkardex:
+		if alumno.materia.cve_materia==cvemat:
+			check=1
+
+	if check==1:
+		return True
+	else:
+		return False
+
+
+def procesarSpa(request):
+	bol=request.user
+
+	al=Alumno.objects.get(cve_usuario__clave=bol)
+
+	if 'fin_spa' in request.POST:
+
+		eleccion=request.POST.getlist('spa')		
+
+		if len(eleccion) > 3:
+			flagspa=3
+			return render(request, 'Alumno/Alinscribirsaberes-frame.html', locals(), context_instance=RequestContext(request))
+		else:
+			for x in eleccion:
+				mat=Materia.objects.get(cve_materia=x)
+				reg=SaberesPrevios(Alumno=al, Materia=mat)
+				reg.save()
+			flagspa=1
+
+			return render(request, 'Alumno/Alinscribirsaberes-frame.html', locals(), context_instance=RequestContext(request))
+		print eleccion
 
 
 def alumnoTutor(request):

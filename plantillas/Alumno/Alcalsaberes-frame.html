@@ -25,6 +25,11 @@
 				<div class="page-header">
 					<h2>Calificaciones saberes previamente adquiridos</h2>
 				</div>
+				{% if regcalspa == 0 %}
+				<div align="center">
+					<p class="text-info">Información no disponible</p>
+				</div>
+				{% else %}
 
 				<table class="table table-bordered">
 				<thead>
@@ -35,13 +40,21 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% for alumno in calspa %}
 					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td>{{alumno.Materia.cve_materia}}</td>
+						<td>{{alumno.Materia.nombre}}</td>
+
+						{% if  alumno.Calificacion != None %}
+							<td>{{alumno.Calificacion}}</td>
+						{% else %}
+							<td></td>
+						{% endif %}
 					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
+			{% endif %}
 		</div>
 </body>
 </html>

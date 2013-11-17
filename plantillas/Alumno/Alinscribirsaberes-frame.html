@@ -2,18 +2,21 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<script type="text/javascript" src="{{MEDIA_URL}}js/script.js"></script>
-	<link rel="stylesheet" href="{{MEDIA_URL}}css/style.css">
-
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.min.css">
+
 	
-	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.min.js"></script>
-	<!--<script type="text/javascript">
-	 	$(".dropdown-toggle").dropdown-toggle
-	</script>-->
+	<script src="{{MEDIA_URL}}js/jquery.js"></script>
+<script src="{{MEDIA_URL}}js/script.js"></script>
+<script src="{{MEDIA_URL}}js/bootstrap.js"></script>
+<script src="{{MEDIA_URL}}js/bootstrap-dropdown.js"></script>
+
+<script src="{{MEDIA_URL}}js/bootbox.min.js"></script>
+<script src="{{MEDIA_URL}}js/horario.js"></script>
+<script src="{{MEDIA_URL}}js/formularios.js"></script>
+
+<link rel="stylesheet" href="{{MEDIA_URL}}css/bootstrap.css">
+<link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
+<link rel="stylesheet" href="{{STATIC_URL}}css/inc.css">
 	
 
 	<title>SAESCOM</title>
@@ -27,6 +30,17 @@
 			<h2>Inscribir Saberes Previamente Adquiridos</h2>
 		</div>
 
+		{% if flagspa == 3 %}
+		<script>
+			bootbox.alert("Solo esta permitido inscribir hasta 3 materias", function(){window.location='../inscsaberesframe/'})
+		</script>
+		{% elif flagspa == 1 %}	
+		<script>
+			bootbox.alert("Materias inscritas", function(){window.location='../inscsaberesframe/'})
+		</script>
+		{% endif %}
+
+		<!--
 		<div class="form-inline" align="center">
 			<label style="margin-left:50px;"><strong>Nivel:</strong></label>
 			<select id="nivel" style="width:auto;">
@@ -36,6 +50,14 @@
 				<option>4</option>
 			</select>
 		</div>
+		-->
+		{% if regs != 0 %}
+
+		<div align="center">
+			<p class="text-info">Ya has inscrito materias</p>
+		</div>
+
+		{% else %}
 
 		<h4>Materias disponibles:</h4>
 
@@ -49,25 +71,25 @@
 					</tr>
 				</thead>
 
+				<form method="POST" action="../procesarSpa/">{% csrf_token %}
 				<tbody>
+					{% for nombre in mat_disponibles %}
 					<tr>
-						<td>C217</td>
-						<td>Bases de Datos</td>
-						<td><input type="checkbox"></td>
+						<td>{{ nombre.cve_materia }}</td>
+						<td>{{ nombre.nombre }}</td>
+						<td><input type="checkbox" name="spa" value={{nombre.cve_materia}}></td>
 					</tr>
-					<tr>
-						<td>C223</td>
-						<td>Sistemas Operativos</td>
-						<td><input type="checkbox"></td>
-					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 
 		<div class="alin-der">
-			<button type="button" class="btn btn-default">Finalizar</button>
+			<input type="submit" name="fin_spa" class="btn btn-default" value="Finalizar">
 		</div>
-		
+
+		</form>		
+		{% endif %}
 					
 	</div>
 </body>
