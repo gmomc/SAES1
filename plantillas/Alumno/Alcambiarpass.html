@@ -12,22 +12,46 @@
 			<h2>Cambiar contraseña</h2>
 		</div>
 
-		{% if notif == 1 %}
+		{% if notif == 4 %}
+			<script>
+				bootbox.alert("Llena todos los campos")
+			</script>
+
+		<script>
+		function validacion(formulario){
+			var er_pass= /(^([A-Z]{4,4}[0-9]{2,2})|^([a-z]{4,4}[0-9]{2,2}))/  
+			var er_actpass=/^$/
+			if(!er_actpass.test(formulario.passact.value)){
+				if(!er_pass.test(formulario.passnuevo.value)){
+					bootbox.alert("Ingresa formato correcto para nueva contraseña (4 letras y 2 números)")
+					return false
+				}
+			}
+			else{
+				return true
+			}
+		}
+		</script>
+
+		{% elif notif == 1 %}
 			<script>
 				bootbox.alert("Contraseña modificada")
 			</script>
+		
 		{% elif notif == 2 %}
 			<script>
 				bootbox.alert("Contraseña actual incorrecta")
 			</script>
+
 		{% elif notif == 3 %}
 			<script>
 				bootbox.alert("Contraseñas nuevas no coinciden")
 			</script>
+
 		{% endif %}
 
 		
-		<form action="../cambiarPass/" method="POST">{% csrf_token %}
+		<form onsubmit="return validacion(this)" name="validaciones" action="../cambiarPass/" method="POST">{% csrf_token %}
 
 		<div align="center">
 			<div class="control-group">
@@ -61,5 +85,3 @@
 	</div>
 
 {% endblock%}
-
-				
