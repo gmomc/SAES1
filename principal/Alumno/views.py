@@ -389,112 +389,6 @@ def alumnoTutor(request):
 	print dat.tutor_escolar.hora_salida
 	return render(request, 'Alumno/Altutor.html', locals(), context_instance=RequestContext(request))
 
-def alumnoSolicitardocs(request):
-	bol=request.user
-	return render(request, 'Alumno/Alsolicitardocs.html', locals(), context_instance=RequestContext(request))
-
-def solicitardocsframe(request):
-	bol=request.user
-
-	if 'sol_doc' in request.GET:
-		tipodoc=request.GET['tipo']
-		categoria=request.GET['categoria']
-		al=Alumno.objects.get(cve_usuario__clave=bol)
-
-		try:
-			pba=DocSolicitado.objects.get(alumno__cve_usuario__clave=bol)
-		except:
-			pba=None
-
-		if pba is None:
-			print "no existe registro"
-			cuenta=DocSolicitado.objects.filter(alumno__cve_usuario__clave=bol)
-			print len(cuenta)
-
-			if tipodoc=="cons" and categoria=="of":#Nuevo registro--Constancia oficial
-
-				cont=request.GET['pass']
-				acceso = authenticate(username=str(bol), password=str(cont))
-
-				if acceso is not None:
-					print "contrasena correcta"
-					print "constancia oficial"
-					reg=DocSolicitado(alumno=al,tipo_doc="Constancia",solicitudes_hechas=1)
-					reg.save()
-
-				if acceso is None:
-					print "Contrasena incorrecta"
-				
-				return HttpResponseRedirect('../procesarSolicitud/')
-
-			elif tipodoc=="bol" and categoria=="of":#Nuevo registro--Boleta oficial
-
-				cont=request.GET['pass']
-				acceso = authenticate(username=str(bol), password=str(cont))
-
-				if acceso is not None:
-					print "contrasena correcta"
-					print " boleta oficial"
-					reg=DocSolicitado(alumno=al,tipo_doc="Boleta",solicitudes_hechas=1)
-					reg.save()
-				if acceso is None:
-					print "Contrasena incorrecta"
-				#reg.save()
-				return HttpResponseRedirect('../procesarSolicitud/')
-
-		else:
-			print "existe el registro"
-			cuenta=DocSolicitado.objects.filter(alumno__cve_usuario__clave=bol)
-			print len(cuenta)
-
-			if tipodoc=="cons" and categoria=="of":#Existe registro--Constancia oficial
-
-				cont=request.GET['pass']
-				acceso = authenticate(username=str(bol), password=str(cont))
-
-				if acceso is not None:
-					print "contrasena correcta"
-					print "constancia oficial"
-					reg=DocSolicitado(alumno=al,tipo_doc="Constancia")
-					reg.save()
-
-				if acceso is None:
-					print "Contrasena incorrecta"
-				
-				return HttpResponseRedirect('../procesarSolicitud/') 
-
-			elif tipodoc=="bol" and categoria=="of":#Existe registro--Boleta oficial
-
-				cont=request.GET['pass']
-				acceso = authenticate(username=str(bol), password=str(cont))
-
-				if acceso is not None:
-					print "contrasena correcta"
-					print " boleta oficial"
-					reg=DocSolicitado(alumno=al,tipo_doc="Boleta",solicitudes_hechas=1)
-					reg.save()
-				if acceso is None:
-					print "Contrasena incorrecta"
-				#reg.save()
-				return HttpResponseRedirect('../procesarSolicitud/')
-
-		
-
-		if tipodoc=="cons" and categoria=="no":#Constancia no oficial
-			print "constancia no oficial"
-
-		elif tipodoc=="bol" and categoria=="no":#Boleta no oficial
-			print "boleta no oficial"
-
-
-	return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
-
-def procesarSolicitud(request):
-	bol=request.user
-	print "procesar solicitud"	
-	return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
-
-
 def alumnoEvaluarprofs(request):
 	bol=request.user
 	return render(request, 'Alumno/Alevaluarprofs.html', locals(), context_instance=RequestContext(request))
@@ -597,7 +491,6 @@ def alumnoCambiarpass(request):
 
 def cambiarPass(request):
 	bol=request.user
-
 	if request.method=='POST':
 		passact=request.POST.get('passact')
 		passnuevo=request.POST.get('passnuevo')
@@ -918,6 +811,9 @@ def reporteBoleta(request):
     	report.generate_by(PDFGenerator, filename=response)
     	return response
 		
+def alumnoSolicitardocs(request):
+	bol=request.user
+	return render(request, 'Alumno/Alsolicitardocs.html', locals(), context_instance=RequestContext(request))
 		
 def reporteConstancia(request):
 	if request.method=='GET':
@@ -925,6 +821,7 @@ def reporteConstancia(request):
 		tipo=request.GET['tipo']
 		categoria=request.GET['categoria']
 		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
+		al=Alumno.objects.get(cve_usuario__clave=bol)
 		response = HttpResponse(mimetype='application/pdf')
 		if tipo=='const' and categoria=='no':
 			report = reporteDeConstancia(queryset=objects_list)
@@ -932,10 +829,68 @@ def reporteConstancia(request):
 		elif tipo=='bol' and categoria=='no':
 			report= reporteDeBoleta(queryset=objects_list)
 			
+		elif tipo=='const' and categoria=='of':
+			cont=request.GET['pass']
+			acceso=authenticate(username=str(bol),password=str(cont))
+			cuenta=DocSolicitado.objects.filter(tipo_doc="Constancia",alumno__cve_usuario__clave=bol)
+			maximo=len(cuenta)
+			print len(cuenta)
+			
+			if maximo==3:
+				msj=3
+				print "No puedes tramitar mas constancias oficiales"
+				return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+			
+			else:
+				if acceso is not None:
+					msj=2
+					print "Contrasena correcta"
+					print "Constancia oficial"
+					reg=DocSolicitado(alumno=al,tipo_doc="Constancia",solicitudes_hechas=1)
+					reg.save()
+					return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+			
+				elif acceso is None:
+					msj=1
+					print "Contrasena incorrecta"
+					cuenta=DocSolicitado.objects.filter(tipo_doc="Constancia",alumno__cve_usuario__clave=bol)
+					return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+			
+		elif tipo=='bol' and categoria=='of':
+			cont=request.GET['pass']
+			acceso=authenticate(username=str(bol),password=str(cont))
+			cuenta=DocSolicitado.objects.filter(tipo_doc="Boleta",alumno__cve_usuario__clave=bol)
+			maximo=len(cuenta)
+			print len(cuenta)
+			
+			if maximo==3:
+				msj=4
+				print "No puedes tramitar mas boletas oficiales"
+				return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+			
+			else:
+				if acceso is not None:
+					msj=2
+					print "Contrasena correcta"
+					print "Boleta oficial"
+					reg=DocSolicitado(alumno=al,tipo_doc="Boleta",solicitudes_hechas=1)
+					reg.save()
+					return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+			
+				elif acceso is None:
+					msj=1
+					print "Contrasena incorrecta"
+					cuenta=DocSolicitado.objects.filter(tipo_doc="Boleta",alumno__cve_usuario__clave=bol)
+					return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
+				
 		else:
 			return HttpResponseRedirect('../solicitardocsframe/')
 		report.generate_by(PDFGenerator, filename=response)
 		return response
+	
+def solicitardocsframe(request):
+	bol=request.user
+	return render(request,'Alumno/Alsolicitardocs-frame.html',locals(), context_instance=RequestContext(request))
 		
 def reporteETS(request):
 	if request.method=='POST':

@@ -32,6 +32,27 @@
 		}
 		}
 		</script>
+		
+		{% if msj == 1 %}
+			<script>
+				bootbox.alert("Contraseña incorrecta")
+			</script>
+		
+		{% elif msj == 2 %}
+			<script>
+				bootbox.alert("Solicitud enviada, pasar a control escolar a recoger documento en 2 días hábiles")
+			</script>
+			
+		{% elif msj == 3 %}
+			<script>
+				bootbox.alert("No puedes tramitar más constancias oficiales")
+			</script>
+			
+		{% elif msj == 4 %}
+			<script>
+				bootbox.alert("No puedes tramitar más boletas oficiales")
+			</script>
+		{% endif %}
 
 		<div class="show-content">
 
