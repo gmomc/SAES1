@@ -816,8 +816,8 @@ def alumnoSolicitardocs(request):
 	return render(request, 'Alumno/Alsolicitardocs.html', locals(), context_instance=RequestContext(request))
 		
 def reporteConstancia(request):
+	bol=request.user
 	if request.method=='GET':
-		bol=request.user
 		tipo=request.GET['tipo']
 		categoria=request.GET['categoria']
 		objects_list =kardex.objects.filter(alumno__cve_usuario__clave=bol)
@@ -837,7 +837,7 @@ def reporteConstancia(request):
 			print len(cuenta)
 			
 			if maximo==3:
-				msj=3
+				msj=5
 				print "No puedes tramitar mas constancias oficiales"
 				return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
 			
@@ -848,6 +848,9 @@ def reporteConstancia(request):
 					print "Constancia oficial"
 					reg=DocSolicitado(alumno=al,tipo_doc="Constancia",solicitudes_hechas=1)
 					reg.save()
+					controlCons=DocSolicitado.objects.filter(tipo_doc="Constancia",alumno__cve_usuario__clave=bol)
+					restantesCons=3-len(controlCons)
+					print restantesCons
 					return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
 			
 				elif acceso is None:
@@ -870,11 +873,14 @@ def reporteConstancia(request):
 			
 			else:
 				if acceso is not None:
-					msj=2
+					msj=3
 					print "Contrasena correcta"
 					print "Boleta oficial"
 					reg=DocSolicitado(alumno=al,tipo_doc="Boleta",solicitudes_hechas=1)
 					reg.save()
+					controlBol=DocSolicitado.objects.filter(tipo_doc="Boleta",alumno__cve_usuario__clave=bol)
+					restantesBol=3-len(controlBol)
+					print restantesBol
 					return render(request, 'Alumno/Alsolicitardocs-frame.html', locals(), context_instance=RequestContext(request))
 			
 				elif acceso is None:

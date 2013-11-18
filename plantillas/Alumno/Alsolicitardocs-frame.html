@@ -2,36 +2,26 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<script type="text/javascript" src="{{MEDIA_URL}}js/script.js"></script>
-	<link rel="stylesheet" href="{{MEDIA_URL}}css/style.css">
-
-	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/bootstrap.min.css">
-	
-	<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/bootstrap.min.js"></script>
-	<!--<script type="text/javascript">
-	 	$(".dropdown-toggle").dropdown-toggle
-	</script>-->
-	
 
+	<script src="{{MEDIA_URL}}js/jquery.js"></script>
+	<script src="{{MEDIA_URL}}js/script.js"></script>
+	<script src="{{MEDIA_URL}}js/bootstrap.js"></script>
+	<script src="{{MEDIA_URL}}js/bootstrap-dropdown.js"></script>
+
+	<script src="{{MEDIA_URL}}js/bootbox.min.js"></script>
+	<script src="{{MEDIA_URL}}js/horario.js"></script>
+	<script src="{{MEDIA_URL}}js/formularios.js"></script>
+
+	<link rel="stylesheet" href="{{MEDIA_URL}}css/bootstrap.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/inc.css">
+	
 	<title>SAESCOM</title>
 </head>
 <body>
 
 	<div class="contenedor-iframe">
-	
-		<script type="text/javascript">
-		function ttipo(valor){
-		if(valor=='of'){
-			document.getElementById("oficial").style.display="block";
-		}
-		else{
-			document.getElementById("oficial").style.display="none";
-		}
-		}
-		</script>
 		
 		{% if msj == 1 %}
 			<script>
@@ -40,19 +30,51 @@
 		
 		{% elif msj == 2 %}
 			<script>
-				bootbox.alert("Solicitud enviada, pasar a control escolar a recoger documento en 2 días hábiles")
+				if({{restantesCons}}==1)
+				{
+					bootbox.alert("Solicitud enviada, recoger documento en 2 días hábiles, te resta {{restantesCons}} constancia oficial")
+				}
+				else
+				{
+					bootbox.alert("Solicitud enviada, recoger documento en 2 días hábiles, te restan {{restantesCons}} constancias oficiales")
+				}
 			</script>
 			
 		{% elif msj == 3 %}
 			<script>
-				bootbox.alert("No puedes tramitar más constancias oficiales")
+				if({{restantesBol}}==1)
+				{
+					bootbox.alert("Solicitud enviada, recoger documento en 2 días hábiles, te resta {{restantesBol}} boleta oficial")
+				}
+				else
+				{
+					bootbox.alert("Solicitud enviada, recoger documento en 2 días hábiles, te restan {{restantesBol}} boletas oficiales")
+				}
 			</script>
 			
 		{% elif msj == 4 %}
 			<script>
 				bootbox.alert("No puedes tramitar más boletas oficiales")
 			</script>
+			
+		{% elif msj == 5 %}
+			<script>
+				bootbox.alert("No puedes tramitar más constancias oficiales")
+			</script>
 		{% endif %}
+	
+		<script type="text/javascript">
+		var valor;
+		function ttipo(valor){
+		if(valor=='of'){
+			document.getElementById("oficial").style.display="block";
+		}
+		
+		else{
+			document.getElementById("oficial").style.display="none";
+		}
+		}
+		</script>
 
 		<div class="show-content">
 
@@ -63,7 +85,7 @@
 			<center>
 			<form action="/alumno/reporteConstancia/" method="GET">{% csrf_token %}
 				<label><strong>Documento:</strong></label>
-				<select id="doc" name="tipo" style="width:auto;">
+				<select id="doc" name="tipo" style="width:auto;" onChange="cat(this.value)">
 					<option value="bol">Boleta global</option>
 					<option value="const">Constancia de estudios</option>
 				</select>
@@ -82,8 +104,7 @@
 					<input type="password" id="contraseña" name="pass">
 					</div>
 				</div>
-				<br>
-				<label>Te restan 2 constancias oficiales</label>
+				
 				</center>
 
 				<br>
