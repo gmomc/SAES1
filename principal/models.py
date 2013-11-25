@@ -26,6 +26,10 @@ turno =(('Matutino','Matutino'),('Vespertino','Vespertino'))
 horas =(('7:00-8:30','7:00-8:30'),('8:30-10:00','8:30-10:00'),('10:30-12:00','10:30-12:00'),('12:00-13:30','12:00-13:30'),
     ('13:30-15:00','13:30-15:00'),('15:00-16:30','15:00-16:30'),('16:30-18:00','16:30-18:00'),('18:30-20:00','18:30-20:00'),
     ('20:00-21:00','20:00-21:00'),('--','--'))
+equipos=(('Computadora','Computadora'),('Impresora','Impresora'),('Multimetro','Multimetro'),('Osciloscopio','Osciloscopio'),
+    ('FuenteAlimentacion','FuenteAlimentacion'))
+status_equipos=(('Activo','Activo'),('Reparacion','Reparacion'))
+
 tipo_doc=(('Constancia', 'Constancia'),('Boleta', 'Boleta'))
 
 
@@ -99,6 +103,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
 class Salon(models.Model):
     cve_salon = models.IntegerField(unique=True, db_index=True) #primary_key=True
+    bandera = models.IntegerField(default=0)
    
     def __unicode__(self):
         return str(self.cve_salon)
@@ -107,24 +112,13 @@ class Salon(models.Model):
 
 class Laboratorio(models.Model):
     nombre = models.CharField(max_length=30, unique=True, db_index=True)
+    numero = models.CharField(max_length=30, unique=True, db_index=True)
     tipo = models.CharField(max_length=20, choices=tipos_laboratorios)
     ubicacion = models.CharField(max_length=30, blank=True,null=True)
+    encargado=models.ForeignKey('Profesor',unique=True,blank=True,null=True)
     
     def __unicode__(self):
-        return self.nombre
-
-#***********************************************************************************************************
-class EmpleadoEscolar(models.Model):
-    cve_usuario = models.ForeignKey(Usuario,unique=True, db_index=True)
-    status = models.CharField(max_length=20, choices=status_empleados)
-    hora_entrada = models.CharField(max_length=5)
-    hora_salida = models.CharField(max_length=5)
-    grado_estudios = models.CharField(max_length=30 )
-    carrera = models.CharField(max_length=40)
-    salario = models.FloatField(null=True,blank=True)
-    lab_a_mi_cargo = models.ForeignKey(Laboratorio, null=True,blank=True)
-    def __unicode__(self):
-        return str(self.cve_usuario)
+        return '%s %s' % (self.tipo,self.numero)
 
 #***********************************************************************************************************
 
@@ -137,12 +131,15 @@ class Grupo(models.Model):
     def get_full_name_gpo(self):
         return 'Grupo : '+self.cve_grupo
 
+#***********************************************************************************************************
+
 class Depto(models.Model):
     nombre_depto = models.CharField(max_length=30,unique=True, db_index=True)
     ubicacion = models.CharField(max_length=50, blank=True,null=True)
-    jefe_depto = models.ForeignKey(Usuario,blank=True,null=True)
     def __unicode__(self):
         return self.nombre_depto
+
+#***********************************************************************************************************
 
 class Horario(models.Model):
     cve_horario = models.IntegerField(unique=True,db_index=True)
@@ -166,15 +163,16 @@ class Materia(models.Model):
     clasificacion = models.CharField(max_length=30, choices=clasificacion_materias)
     tipo= models.CharField(max_length=12, choices=tipo_materias)
     nivel = models.CharField(max_length=1, choices=niveles)
-    coordinador = models.ForeignKey(Usuario,blank=True,null=True)
+    coordinador = models.ForeignKey('Profesor',blank=True,null=True)
     depto = models.ForeignKey(Depto,blank=True,null=True)
     materia_antecedente = models.ForeignKey('self', null=True,blank=True,related_name='materia_materia_antecedente')
-    materia_siguiente = models.ForeignKey('self', null=True, blank=True, related_name='materia_materia_siguiente')
+    materia_siguiente = models.ForeignKey('self', null=True, blank=True, related_name='materia_materia_siguiente',default="")
     def __unicode__(self):
         return '%s %s' % (self.cve_materia,self.nombre)
 
     def get_full_name_mate(self):
         return 'Materia : '+self.nombre
+#***********************************************************************************************************
 
 
 class Profesor(models.Model):
@@ -183,18 +181,25 @@ class Profesor(models.Model):
     rol_academico = models.CharField(max_length=30, choices=roles_academicos,null=True)
     tipo = models.CharField(max_length=30, choices=tipo_profesores)
     grupo_tutorado = models.ForeignKey(Grupo,null=True,blank=True)
-
+    Departamento = models.ForeignKey(Depto,null=True,blank=True)
     status = models.CharField(max_length=20, choices=status_empleados)
     hora_entrada = models.CharField(max_length=5)
     hora_salida = models.CharField(max_length=5)
     grado_estudios = models.CharField(max_length=30 )
     carrera = models.CharField(max_length=40)
     salario = models.FloatField(null=True,blank=True)
-    lab_a_mi_cargo = models.ForeignKey(Laboratorio, null=True,blank=True)
-    comentario=models.CharField(max_length=400)
+    comentario=models.CharField(max_length=400,null=True,blank=True)
 
     def __unicode__(self):
         return str(self.cve_usuario)
+#***********************************************************************************************************
+
+class JefeDepartamento(models.Model):
+    cve_depto=models.ForeignKey(Depto,unique=True)
+    cve_prof=models.ForeignKey(Profesor,unique=True)
+    class Meta:
+        unique_together = (("cve_depto","cve_prof"))
+#***********************************************************************************************************
 
 
 class MateriaImpartidaEnGrupo(models.Model):
@@ -225,10 +230,6 @@ class Alumno(models.Model):
 #***********************************************************************************************************
 
 
-#***********************************************************************************************************
-
-
-#***********************************************************************************************************
 class Ets(models.Model):
     cve_materia = models.ForeignKey(Materia)
     turno = models.CharField(max_length=1,choices=turnos)
@@ -243,14 +244,6 @@ class Ets(models.Model):
 
     def __unicode__(self): 
         return '%s %s' % (str(self.cve_materia), self.turno)
-
-#***********************************************************************************************************
-
-
-
-#***********************************************************************************************************
-
-
 
 #***********************************************************************************************************
 
@@ -291,7 +284,6 @@ class ComentarioTutorado(models.Model):
     comentario=models.CharField(max_length=150)
     fecha=models.DateField(default=date.today,blank=True,null=True)
     class Meta:
-        unique_together = (("profesor","alumno"),)
         ordering = ('alumno',)
     def __str__(self):
         return '%s %s' % (self.alumno,self.comentario)
@@ -299,8 +291,8 @@ class ComentarioTutorado(models.Model):
 class AlumnoTomaClaseEnGrupo(models.Model):
     alumno = models.ForeignKey(Alumno)
     materia_grupo = models.ForeignKey(MateriaImpartidaEnGrupo)
-    calificacion=models.IntegerField(null=True, blank=True)
-    calificacionExtra=models.IntegerField(null=True, blank=True)
+    calificacion=models.IntegerField(null=True, blank=True,default=0)
+    calificacionExtra=models.IntegerField(null=True, blank=True,default=0)
     periodo=models.CharField(null=True, max_length=4)
     def get_full_alumno(self):
 		return 'Boleta: %s '%(self.alumno)
@@ -328,6 +320,7 @@ class SaberesPrevios(models.Model):
         unique_together = (("Alumno", "Materia"),)
     def __str__(self):
         return '%s %s %s' % (self.Alumno,self.Materia,self.Calificacion)
+#***********************************************************************************************************
 
 
 class kardex(models.Model):
@@ -343,6 +336,7 @@ class kardex(models.Model):
     def __str__(self):
         return '%s %s %s' % (self.alumno, self.materia, self.calificacion)
 
+#***********************************************************************************************************
 
 class DocSolicitado(models.Model):
     alumno=models.ForeignKey(Alumno)
@@ -353,6 +347,7 @@ class DocSolicitado(models.Model):
     #class Meta:
         #unique_together=(('alumno','tipo_doc'),)
 
+#***********************************************************************************************************
 
 class EvaluacionProfesor(models.Model):
     alumno=models.ForeignKey(Alumno)
@@ -367,3 +362,31 @@ class EvaluacionProfesor(models.Model):
     #   unique_together=(('alumno','profesor','materia'))
     def __str__(self):
         return '%s %s %s' % (self.alumno, self.profesor, self.materia)
+#***********************************************************************************************************
+
+
+class Equipos(models.Model):
+    nombreEquipo=models.CharField(max_length=20,choices=equipos)
+    numero_serie=models.CharField(max_length=50,unique=True)
+    descripcionEquipo=models.CharField(max_length=30,null=True, blank=True)
+    status=models.CharField(max_length=20,choices=status_equipos)
+    observaciones=models.CharField(max_length=50,null=True)
+    laboratorio=models.ForeignKey('Laboratorio')
+    def __str__(self):
+        return '%s %s %s' % (self.nombreEquipo,self.numero_serie,self.laboratorio)
+        
+#*********************CALENDARIOS*********************************
+
+class calendarios(models.Model):
+		clave = models.CharField(max_length=10, unique=True, db_index=True)
+		inicperiodo=models.DateField(blank=True,null=True)
+		finperiodo=models.DateField(blank=True,null=True)
+		periodo=models.CharField(max_length=6,null=True)
+		inicinscr=models.DateField(blank=True,null=True)
+		fininscr=models.DateField(blank=True,null=True)
+		inicord=models.DateField(blank=True,null=True)
+		finord=models.DateField(blank=True,null=True)
+		inicextra=models.DateField(blank=True,null=True)
+		finextra=models.DateField(blank=True,null=True)
+		inicetes=models.DateField(blank=True,null=True)
+		finets=models.DateField(blank=True,null=True)

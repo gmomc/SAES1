@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import login, authenticate, logout
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.utils import simplejson
 
 from forms import *
 from models import *
@@ -31,13 +32,15 @@ def inicio(request):
 
     usuario = request.user
     formulario = InicioForm()
-    error = []
+    error = []    
     if not request.user.is_anonymous():
 
         if usuario.clasificacion ==  'Alumnos':
             return HttpResponseRedirect("alumno/alumnoInicio")
         elif usuario.clasificacion ==  'Profesores':
             return HttpResponseRedirect("profesor_main/")
+        elif usuario.clasificacion ==  'Empleado_escolar':
+			return HttpResponseRedirect("control/control_main")        
 
     if request.method == "POST":
         formulario = InicioForm(request.POST)
@@ -100,7 +103,7 @@ def profesor_main(request):
     try:
         profesor=request.user
         atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
-        Materias=MateriaImpartidaEnGrupo.objects.filter(profesor__cve_usuario__clave=profesor)
+        Materias=MateriaImpartidaEnGrupo.objects.filter(profesor__cve_usuario=profesor)
         for materia in Materias:
 
             if(materia.horario.cve_horario==1):
@@ -164,7 +167,10 @@ def profesor_main(request):
                 materia15=materia.materia.nombre
                 m15=color(materia)
                 grupo15=materia.grupo
-            
+
+        es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
         return render(request, 'profesor/main.html',locals(),context_instance=RequestContext(request))
     except:
         mensaje=1
@@ -175,9 +181,13 @@ def profesor_miperfil(request):
     try:
         profesor=request.user
         atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+        materias_coordina=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario)
         profesor2=Profesor.objects.get(cve_usuario=profesor)
         materias=MateriaImpartidaEnGrupo.objects.filter(profesor=profesor2)
         tutorados=Alumno.objects.filter(tutor_escolar=profesor2)
+        es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
         foto=profesor2.cve_usuario.foto
         num=0
         for alumno in tutorados:
@@ -194,6 +204,10 @@ def guarda_miperfil(request):
         atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
         grupos=MateriaImpartidaEnGrupo.objects.filter(profesor=profesor)
         profesor2=Profesor.objects.get(cve_usuario=profesor)
+        es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+        
         correo=request.GET['email']
         telefono=request.GET['telefono']
         hentrada=request.GET['entrada']
@@ -235,6 +249,10 @@ def profesor_miperfil2(request):
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
     profesor2=Profesor.objects.get(cve_usuario=profesor)
     grupos=MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     return render_to_response('profesor/mi-perfil2.html',locals(),context_instance=RequestContext(request))
 
 
@@ -242,12 +260,20 @@ def profesor_preferencias(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
     prof=Profesor.objects.get(cve_usuario=profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     return render_to_response('profesor/preferencias.html',locals(),context_instance=RequestContext(request))
 
 
 def guardar_preferencias(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     comentario=request.GET['preferencias']
     p=Profesor.objects.filter(cve_usuario=profesor).update(comentario=comentario)
     prof=Profesor.objects.get(cve_usuario=profesor)
@@ -260,24 +286,43 @@ def profesor_logout(request):
 def profesor_mis_grupos(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     return render_to_response('profesor/mis-grupos.html',locals(),context_instance=RequestContext(request))
 
 def profesor_registrar_calificaciones(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.get(cve_usuario = profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     return render_to_response('profesor/registrar-calificaciones.html',locals(),context_instance=RequestContext(request))
 
 def profesor_registrar_calificaciones_extra(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     return render_to_response('profesor/registrar-calificacionesExtra.html',locals(),context_instance=RequestContext(request))
 
 def profesor_registrar_calificaciones_ets(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
-    grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materias_ets=Ets.objects.filter(cve_materia__coordinador__cve_usuario=atributos_profesor.cve_usuario)
     return render_to_response('profesor/registrar-calificacionesETS.html',locals(),context_instance=RequestContext(request))
 
 
@@ -289,35 +334,59 @@ def directorio(request):
     gruposList= Grupo.objects.all()
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     return render_to_response('directorio.html',locals(),context_instance=RequestContext(request))
 
 def profesor_reportes_PRUI08_1(request):
   
     profesor=request.user
     atributos_profesor = Profesor.objects.get(cve_usuario = profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     return render_to_response('profesor/reportes/PRUI08.1.html',locals(),context_instance=RequestContext(request))
 
 def profesor_reportes_PRUI08_2(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.get(cve_usuario = profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     return render_to_response('profesor/reportes/PRUI08.2.html',locals(),context_instance=RequestContext(request))
 
 def profesor_calendario(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     return render_to_response('profesor/calendario.html',locals(),context_instance=RequestContext(request))
 
 def profesor_tutorias(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     Tutorado=Alumno.objects.filter(tutor_escolar=atributos_profesor)
     return render_to_response('profesor/tutorias.html',locals(),context_instance=RequestContext(request))
 
 def profesor_ingresa_calificacion(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     materia=request.GET['materia']
     materiaGrupo = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     materiaGrupo = materiaGrupo.filter(id=materia)[0]
@@ -330,6 +399,10 @@ def profesor_ingresa_calificacion(request):
 def profesor_ingresa_calificacion_extra(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     materia=request.GET['materia']
     materiaGrupo1 = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     materiaGrupo = materiaGrupo1.filter(id=materia)
@@ -343,31 +416,33 @@ def profesor_ingresa_calificacion_extra(request):
 
 def profesor_ingresa_calificacion_ets(request):
     profesor=request.user
+    calificaciones=request.GET
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     materia=request.GET['materia']
-    materiaGrupo = MateriaImpartidaEnGrupo.objects.filter(profesor=profesor)[int(materia)]
-    request.session["materiaGrupo"] = materiaGrupo
-
-    alumnos = AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=materiaGrupo)
-    print alumnos.values()
+    ets = Ets.objects.filter(id=int(materia))[0]
+    request.session["ets_aplicado"] = ets
+    alumnos = AlumnoTomaEts.objects.filter(ets__id=int(materia))
     return render_to_response('profesor/IngresaCalificacionETS.html',locals(),context_instance=RequestContext(request))
 
 def profesor_guarda_calificacion(request):
     calificaciones=request.GET
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     
     materiaGrupo = request.session["materiaGrupo"]
     materia = request.session["materia"]
-    print materiaGrupo
     alumnos = AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=materiaGrupo)
-    print "-"*10
-    print alumnos.values()
-    print "-"*10
     for alumno in calificaciones:
         p=alumnos.filter(alumno_id=alumno).update(calificacion=calificaciones.get(alumno))
-        print p
     mensaje=1
     return render_to_response('profesor/IngresaCalificacion.html',locals(),context_instance=RequestContext(request))
 
@@ -377,59 +452,46 @@ def profesor_guarda_calificacionExtra(request):
     calificaciones=request.GET
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
-    grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
     
+    grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
     materiaGrupo = request.session["materiaGrupo"]
-    print materiaGrupo
     alumnos = AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=materiaGrupo)
-    print "-"*10
-    print alumnos.values()
-    print "-"*10
     for alumno in calificaciones:
         p=alumnos.filter(alumno_id=alumno).update(calificacionExtra=calificaciones.get(alumno))
-        print p
     mensaje=1
     return render_to_response('profesor/IngresaCalificacionExtra.html',locals(),context_instance=RequestContext(request))
 
 def profesor_guarda_calificacionETS(request):
-    calificaciones=request.GET
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
-    grupolist = MateriaImpartidaEnGrupo.objects.filter(profesor=atributos_profesor)
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
     
-    materiaGrupo = request.session["materiaGrupo"]
-    print materiaGrupo
-    alumnos = AlumnoTomaClaseEnGrupo.objects.filter(materia_grupo=materiaGrupo)
-    print "-"*10
-    print alumnos.values()
-    print "-"*10
+    calificaciones=request.GET
+    ets = request.session["ets_aplicado"]
     for alumno in calificaciones:
-        p=alumnos.filter(alumno_id=alumno).update(calificacion=calificaciones.get(alumno))
-        print p
-
-    return render_to_response('profesor/registrar-calificacionesETS.html',locals(),context_instance=RequestContext(request))
+        p=AlumnoTomaEts.objects.filter(ets__id=ets.id,alumno_id=alumno).update(calificacion=calificaciones.get(alumno))
+    mensaje=1
+    alumnos = AlumnoTomaEts.objects.filter(ets__id=ets.id)
+    return render_to_response('profesor/IngresaCalificacionETS.html',locals(),context_instance=RequestContext(request))
 
 def perfiles_profesor(request):
         try:
             profesor=request.user
             atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
             cvep=request.GET['prof']
+            es_coordinador=Materia.objects.filter(coordinador__cve_usuario__clave=cvep).count()
+            es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+            es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
             profesor2=Profesor.objects.get(cve_usuario__clave=cvep)
-            nombre=profesor2.cve_usuario.nombre + " " + profesor2.cve_usuario.apellidoPaterno + " " + profesor2.cve_usuario.apellidoMaterno
-            rol=profesor2.rol_academico
-            clasificacion=profesor2.cve_usuario.clasificacion
-            email_i=profesor2.cve_usuario.email_institucional
-            email_p=profesor2.cve_usuario.email_personal
-            carrera=profesor2.carrera
-            telefono_c=profesor2.cve_usuario.Telefono_Casa
-            telefono=profesor2.cve_usuario.Telefono_Celular
-            grado=profesor2.grado_estudios
+            materias_coordina=Materia.objects.filter(coordinador__cve_usuario__clave=cvep)
             materias=MateriaImpartidaEnGrupo.objects.filter(profesor=profesor2)
             tutorados=Alumno.objects.filter(tutor_escolar=profesor2)
-            grupo=profesor2.grupo_tutorado
-            entrada=profesor2.hora_entrada
-            salida=profesor2.hora_salida
-            foto=profesor2.cve_usuario.foto
             num=0
             for alumno in tutorados:
                 num+=1
@@ -450,7 +512,10 @@ def perfiles_materia(request):
         profesor=request.user
         atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
         infmat=request.GET['mat']
-
+        es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
         materia2=Materia.objects.get(nombre=infmat)
         materias=MateriaImpartidaEnGrupo.objects.filter(materia=materia2)
 
@@ -470,6 +535,10 @@ def perfiles_grupo(request):
         idg=request.GET['grup']
         profesor=request.user
         atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+        es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()        
+        es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
         materias=MateriaImpartidaEnGrupo.objects.filter(grupo__cve_grupo=idg)
         grupo=Grupo.objects.get(cve_grupo=idg)
         turno=grupo.turno
@@ -552,6 +621,10 @@ def perfiles_grupo(request):
 def profesor_tutorias_comentar(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     cont =0
     Tutorado=ComentarioTutorado.objects.filter(profesor=atributos_profesor)
     return render_to_response('profesor/comentar-tutoria.html',locals(),context_instance=RequestContext(request))
@@ -560,6 +633,10 @@ def guardar_comentarios(request):
     try:
         profesor=request.user
         atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+        es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
         cont =0
         usuario = request.user
         Tutorado=ComentarioTutorado.objects.filter(profesor=atributos_profesor)
@@ -580,6 +657,10 @@ def guardar_comentarios(request):
 def profesor_agregar_tutorado(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
     return render_to_response('profesor/agregar-tutorado.html',locals(),context_instance=RequestContext(request))
 
 def profesor_tutorias_add(request):
@@ -605,6 +686,7 @@ def profesor_tutorias_add(request):
         mensaje=2
         profesor=request.user
         atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+
         return render_to_response('profesor/agregar-tutorado.html',locals(),context_instance=RequestContext(request))
 
 
@@ -674,3 +756,210 @@ def recuperar_contrasena(request):
     else:
         formulario = recuperar_pass()
         return render_to_response('recuperar_pass.html',{'formulario':formulario}, context_instance=RequestContext(request))
+
+
+
+def jefe_depto_horarios(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefe=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario)[0]
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materias=MateriaImpartidaEnGrupo.objects.filter(materia__depto__id=es_jefe.cve_depto.id)
+    profesores=Profesor.objects.filter(Departamento__id=es_jefe.cve_depto.id)
+    comentarios=[]
+    for come in profesores:
+        comentarios.append(come.comentario)
+
+    json_list = simplejson.dumps(comentarios)
+    return render_to_response('profesor/gestionarHorarios.html',locals(),context_instance=RequestContext(request))
+
+
+
+def jefe_depto_guarda_horarios(request):
+
+    materias=request.GET
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefe=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario)[0]
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materias_impartidas=MateriaImpartidaEnGrupo.objects.filter(materia__depto__id=es_jefe.cve_depto.id)
+    try:
+        for materia in materias:
+            if materias.get(materia) =="sinAsignar":
+                print "sin asignar"
+                p=materias_impartidas.filter(id=materia).update(profesor="")
+            else:
+                p=materias_impartidas.filter(id=materia).update(profesor=materias.get(materia))
+                mensaje=1;
+
+    except:
+        mensaje=2;
+    materias=MateriaImpartidaEnGrupo.objects.filter(materia__depto__id=es_jefe.cve_depto.id)
+    profesores=Profesor.objects.filter(Departamento__id=es_jefe.cve_depto.id)
+    comentarios=[]
+    for come in profesores:
+        comentarios.append(come.comentario)
+
+    json_list = simplejson.dumps(comentarios)
+    return render_to_response('profesor/gestionarHorarios.html',locals(),context_instance=RequestContext(request))
+
+def jefe_depto_guarda_coordinacion(request):
+    materia_get=request.GET
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefe=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario)[0]
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materias=Materia.objects.filter(depto__id=es_jefe.cve_depto.id)
+    profesores=Profesor.objects.filter(Departamento__id=es_jefe.cve_depto.id)
+
+    try:
+        for materia in materia_get:
+            if materia_get.get(materia) =="sinAsignar":
+                p=materias.filter(id=materia).update(coordinador="")
+            else:
+                p=materias.filter(id=materia).update(coordinador=materia_get.get(materia))
+                mensaje=1;
+
+    except:
+        mensaje=2;
+    
+    return render_to_response('profesor/gestionarCoordinaciones.html',locals(),context_instance=RequestContext(request))
+
+def jefe_depto_coordinacion(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefe=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario)[0]
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materias=Materia.objects.filter(depto__id=es_jefe.cve_depto.id)
+    profesores=Profesor.objects.filter(Departamento__id=es_jefe.cve_depto.id)
+
+    return render_to_response('profesor/gestionarCoordinaciones.html',locals(),context_instance=RequestContext(request))
+
+def equipoLaboratorio(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefe=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario)[0]
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario)[0]
+    equipos=Equipos.objects.filter(laboratorio__id=es_laboratorista.id)
+    return render_to_response('profesor/gestionarEquipo.html',locals(),context_instance=RequestContext(request))
+
+def modificarEquipo(request):
+    observaciones=request.GET
+    
+    agregar=0
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefe=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario)[0]
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario)[0]
+    
+    equipos=Equipos.objects.filter(laboratorio__id=es_laboratorista.id)
+    for equip in equipos:
+        print observaciones.get(equip.numero_serie+equip.nombreEquipo)
+        agregar=1
+        for eq in observaciones:
+            if(equip.numero_serie!=eq):
+                agregar=agregar
+            else:
+                agregar=0
+        if agregar==1:
+            print equip.numero_serie
+            p=Equipos.objects.get(numero_serie=equip.numero_serie).delete()
+            agregar=0
+        else:
+            p=equipos.filter(numero_serie=equip.numero_serie).update(observaciones=observaciones.get(equip.numero_serie),status=observaciones.get(equip.numero_serie+equip.nombreEquipo))
+
+    equipos=Equipos.objects.filter(laboratorio__id=es_laboratorista.id)
+    
+
+    mensaje=1
+    return render_to_response('profesor/gestionarEquipo.html',locals(),context_instance=RequestContext(request))
+
+
+
+def profesor_agregar_equipo(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    return render_to_response('profesor/agregar-equipo.html',locals(),context_instance=RequestContext(request))
+def profesor_equipo2(request):
+    try:
+        profesor=request.user
+        nombre=request.GET['nombre']
+        serie=request.GET['serie']
+        desc=request.GET['desc']
+        status=request.GET['status']
+        obs=request.GET['obs']
+        atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+        es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+        es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+        
+        p=Equipos(nombreEquipo=nombre,numero_serie=serie,
+                        descripcionEquipo=desc,
+                        status=status,observaciones=obs,
+                        laboratorio=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario)[0])
+        p.save()
+        menseje=1
+    except:
+        mensaje=2
+    return render_to_response('profesor/agregar-equipo.html',locals(),context_instance=RequestContext(request))
+
+def profesor_registrar_calificaciones_saberes(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materias=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario)
+    return render_to_response('profesor/registrar-calificacionesSaberes.html',locals(),context_instance=RequestContext(request))
+
+def profesor_ingresa_calificacion_saberes(request):
+    profesor=request.user
+    calificaciones=request.GET
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materia=request.GET['materia']
+    request.session["materiaSaberes"] = materia
+    materia_saber = Materia.objects.filter(id=int(materia))[0]
+    saberes = SaberesPrevios.objects.filter(Materia__id=int(materia)).order_by('Alumno')
+    return render_to_response('profesor/IngresaCalificacionSaberes.html',locals(),context_instance=RequestContext(request))
+
+
+def profesor_guarda_calificacionSaberes(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+
+    saberes=request.GET
+    for saber in saberes:
+        p=SaberesPrevios.objects.filter(id=saber).update(Calificacion=saberes.get(saber))
+    mensaje=1
+    materia = request.session["materiaSaberes"]
+    materia_saber = Materia.objects.filter(id=int(materia))[0]
+    saberes = SaberesPrevios.objects.filter(Materia__id=int(materia)).order_by('Alumno')
+    return render_to_response('profesor/IngresaCalificacionSaberes.html',locals(),context_instance=RequestContext(request))

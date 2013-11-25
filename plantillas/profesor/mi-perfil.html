@@ -7,13 +7,17 @@
 
 {%  block contenido %}
 			<div id='profesor-top'>
-			<h1>Mi perfil</h1><br>
+			<h1>Mi perfil</h1>
 			<table id='tabla-info-profesor'>
 				<tr>
 					<td class='info-profesor'>
 						<h2 id='profesor-nombre'>{{profesor2.cve_usuario.nombre}} {{profesor2.cve_usuario.apellidoPaterno}} {{profesor2.cve_usuario.apellidoMaterno}}</h2>
-						<h3 id='profesor-cargos'>{{profesor2.rol_academico}} | {{profesor2.cve_usuario.clasificacion}}</h3>
-						<br>
+						<h3 id='profesor-cargos'>{% if es_coordinador > 0 %}
+							Coordinador
+			           {% endif %} |  {% if es_jefeDepto > 0 %}
+							JefeDepartamento
+			           {% endif %}   | {{profesor2.cve_usuario.clasificacion}}</h3>
+						<p id='profesor-departamento'>Departamento: {{profesor2.Departamento}}</p>
 						<p id='profesor-mail-institucional'>{{profesor2.cve_usuario.email_institucional}}</p>
 						<p id='profesor-mail-personal'>{{profesor2.cve_usuario.email_personal}}</p>
 						<p id='profesor-cubiculo'>{{profesor2.carrera}}</p>
@@ -46,6 +50,29 @@
 						
 					</table>
 					<br>
+				<h2>Materias que Coordina</h2>
+				<br>
+					<table id='tabla-materias-profesor'>
+						<tr>
+							<th>Nombre de la materia</th>
+							<th>Plan</th>
+							<th>Clasificacion</th>
+							<th>Departamento</th>
+
+
+						</tr>
+						{%for materia in materias_coordina %}
+							<tr>
+								<td>{{materia.nombre}}</td>
+								<td>{{materia.plan_estudios}}</td>
+								<td>{{materia.clasificacion}}</td>
+								<td>{{materia.depto}}</td>
+
+							</tr>
+						{% endfor %}
+						
+					</table>
+					<br>
 					<br>
 					<br>
 					<table  width=550>
@@ -59,7 +86,7 @@
 					<h2>Más información</h2>
 					<br>
 					<p class='label'>Grado</p>
-					<p id='profesor-grado'>grado_estudios</p>
+					<p id='profesor-grado'>{{profesor2.grado_estudios}}</p>
 					<br>
 					<p class='label'>Tutorías</p>
 					<p id='profesor-grado'>Sí ({{num}} alumnos disponibles)</p>

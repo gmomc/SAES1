@@ -59,34 +59,13 @@
             </form>
         </div>
         <footer>
-            <div class="facebook-login">
-                <a href="#" id="mostrar_teclado"><span>Mostrar teclado</span></a>
-            </div>
+         
         </footer>
     </section>
 </div>
 
-<script src="{{MEDIA_URL}}login/keyboard/js/libs/jquery-1.6.4.min.js"></script>
-<script src="{{MEDIA_URL}}login/keyboard/js/jquery.keyboard/jquery.keyboard.js"></script>
-<script src="{{MEDIA_URL}}login/keyboard/js/jquery.keyboard/keyboards/qwerty.js"></script>
-<script src="{{MEDIA_URL}}login/keyboard/js/jquery.keyboard/plugins/form.js"></script>
-<script src="{{MEDIA_URL}}login/keyboard/js/jquery.selection.js"></script>
 
-<script>
-        (function($){$(document).ready(function(){
-            $('#mostrar_teclado').click(function(){
-                var valor = document.getElementById('mostrar_teclado').innerHTML.substr('', 1).toLowerCase();
-                if(valor == "m" || valor == "<"){
-                    $('#mostrar_teclado').html('Cerrar teclado');
-                    $('body').keyboard({keyboard: 'qwerty', plugin: 'form'});
-                    $('.keyboard').css('display','block');
-                }else{
-                    $('.keyboard').css('display', 'none');
-                    $('#mostrar_teclado').html('Mostrar teclado');
-                }
-            });
-        })})(jQuery);
-</script>
+
 
 </body>
 </html>
