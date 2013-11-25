@@ -20,10 +20,15 @@ from geraldo.generators import PDFGenerator
 def alumnoInicio(request):
 
 	bol=request.user
-	alu=CitaInsc.objects.get(alumno__cve_usuario=bol)
-	cita=alu.cita
 	hora=datetime.now(tz=timezone.get_default_timezone())
-	inscrito=alu.inscrito
+	try:
+		alu=CitaInsc.objects.get(alumno__cve_usuario=bol)
+		cita=alu.cita
+		inscrito=alu.inscrito
+	except:
+		cita=0
+		inscrito=0
+		return render(request, 'Alumno/Alinicio.html', locals(), context_instance=RequestContext(request))
 	return render(request, 'Alumno/Alinicio.html', locals(), context_instance=RequestContext(request))
 
 def alumnoDatosGen(request):
@@ -752,11 +757,17 @@ def addAll(request):
 	al=Usuario.objects.get(clave=bol)
 	alu=Alumno.objects.get(cve_usuario=al)
 	for materia in materInfo:
-		request.session['cred']=request.session['cred']+materia.materia.creditos
-		p=AlumnoTomaClaseEnGrupo(alumno=alu,materia_grupo=materia,calificacion=0,calificacionExtra=0)
-		p.save()
-	response.write("")
+		if materia.cupo==0:
+			response.write("No hay cupo disponible para " +materia.materia.nombre+".<br>")
+		else:
+			request.session['cred']=request.session['cred']+materia.materia.creditos
+			p=AlumnoTomaClaseEnGrupo(alumno=alu,materia_grupo=materia,calificacion=0,calificacionExtra=0)
+			try:
+				p.save()
+			except:
+				response.write("Ya has inscrito la materia "+materia.materia.nombre+" en el grupo "+grupo+"<br>")
 	if request.is_ajax():
+		response.write("El grupo "+grupo+" se ha agregado correctamente a tu horario")
 		return response
 #
 def final(request):

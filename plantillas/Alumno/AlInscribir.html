@@ -57,7 +57,7 @@
 			document.getElementById("eliminador").style.display="inline";
 			document.getElementById("cancela").style.display="inline";
 			document.getElementById("guarda").style.display="block";
-			$.ajax({ url:"/alumno/addAll", type:"GET", data:({bol: a, grup: grupo}),}).done(function(data){ bootbox.alert('Has añadido el grupo '+grupo+' a tu horario',function() {}); document.getElementById("actual").innerHTML=data; });	
+			$.ajax({ url:"/alumno/addAll", type:"GET", data:({bol: a, grup: grupo}),}).done(function(data){ bootbox.alert(data,function() {}); });	
 		}
 		function final(){
 			var a="{{bol}}";
