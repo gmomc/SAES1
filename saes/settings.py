@@ -130,6 +130,8 @@ INSTALLED_APPS = (
      'principal',
      #ALUMNO
      'principal.Alumno',
+     #CONTROL
+     'principal.control',
 )
 
 AUTH_USER_MODEL = "principal.Usuario"

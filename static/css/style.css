@@ -154,6 +154,15 @@ div.spacer{
 	margin-top: 50px;
 }
 
+#footer_profesor{
+	height:40 px;
+	clear:both;
+	background-color:#ffffff;
+	padding:12px;
+	text-align:center;
+	border:15px solid #1169A3;
+}
+
 #footer a{
 	padding-left:20px;
 }
@@ -199,6 +208,13 @@ div.content-principal{
 	width: 780px;
 	/*height: 100%;*/
 	height: 545px;
+	border: 15px solid #1169A3;
+	padding: 10px 10px;
+}
+div.content-principal-profesores{
+	float: right;
+	width: 780px;
+	height: auto;
 	border: 15px solid #1169A3;
 	padding: 10px 10px;
 }

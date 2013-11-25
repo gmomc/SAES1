@@ -387,11 +387,16 @@ def procesarSpa(request):
 
 def alumnoTutor(request):
 	bol=request.user
-	dat=Alumno.objects.get(cve_usuario=bol)
-	aux=dat.tutor_escolar.cve_usuario
-	nomcomprof=Usuario.get_full_name(aux)
-	print dat.tutor_escolar.hora_entrada
-	print dat.tutor_escolar.hora_salida
+	try:
+		dat=Alumno.objects.get(cve_usuario=bol)
+		aux=dat.tutor_escolar.cve_usuario
+		nomcomprof=Usuario.get_full_name(aux)
+		print dat.tutor_escolar.hora_entrada
+		print dat.tutor_escolar.hora_salida
+	except:
+		sintutor=1
+		print "sin tutor"
+	
 	return render(request, 'Alumno/Altutor.html', locals(), context_instance=RequestContext(request))
 
 def alumnoEvaluarprofs(request):
