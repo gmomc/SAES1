@@ -31,6 +31,9 @@ urlpatterns = patterns('',
 	url(r'^profesor_miperfil/$','principal.views.profesor_miperfil'),
 	url(r'^guarda_miperfil/$','principal.views.guarda_miperfil'),
 	url(r'^guardar_preferencias/$','principal.views.guardar_preferencias'),
+	url(r'^profesor_agregar_equipo/$','principal.views.profesor_agregar_equipo'),
+
+	url(r'^profesor_equipo2/$','principal.views.profesor_equipo2'),
 
 	url(r'^profesor_guarda_calificacionExtra/$','principal.views.profesor_guarda_calificacionExtra'),
 	url(r'^profesor_guarda_calificacionETS/$','principal.views.profesor_guarda_calificacionETS'),
@@ -44,7 +47,16 @@ urlpatterns = patterns('',
 	url(r'^recuperar_contrasena/$','principal.views.recuperar_contrasena'),
 	url(r'^reporte_lista/$', 'principal.views.reporte_lista'),
 	url(r'^reporte_evaluaciones/$', 'principal.views.reporte_evaluaciones'),
-
+	url(r'^jefe_depto_coordinacion/$', 'principal.views.jefe_depto_coordinacion'),
+	url(r'^jefe_depto_horarios/$', 'principal.views.jefe_depto_horarios'),
+	url(r'^jefe_depto_guarda_horarios/$', 'principal.views.jefe_depto_guarda_horarios'),
+	url(r'^jefe_depto_guarda_coordinacion/$', 'principal.views.jefe_depto_guarda_coordinacion'),
+	url(r'^equipoLaboratorio/$', 'principal.views.equipoLaboratorio'),
+	url(r'^modificarEquipo/$', 'principal.views.modificarEquipo'),
+	url(r'^profesor_registrar_calificaciones_saberes/$', 'principal.views.profesor_registrar_calificaciones_saberes'),
+	url(r'^profesor_ingresa_calificacion_saberes/$', 'principal.views.profesor_ingresa_calificacion_saberes'),
+	url(r'^profesor_guarda_calificacionSaberes/$', 'principal.views.profesor_guarda_calificacionSaberes'),
+	
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'media/(?P<path>.*)', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
@@ -52,6 +64,8 @@ urlpatterns = patterns('',
 
   	#ALUMNO
   	url(r'^alumno/', include('principal.Alumno.urls')),
+  	#CONTROL
+  	url(r'^control/', include('principal.control.urls')),
 )
 
 

@@ -32,15 +32,13 @@ def inicio(request):
 
     usuario = request.user
     formulario = InicioForm()
-    error = []    
+    error = []
     if not request.user.is_anonymous():
 
         if usuario.clasificacion ==  'Alumnos':
             return HttpResponseRedirect("alumno/alumnoInicio")
         elif usuario.clasificacion ==  'Profesores':
             return HttpResponseRedirect("profesor_main/")
-        elif usuario.clasificacion ==  'Empleado_escolar':
-			return HttpResponseRedirect("control/control_main")        
 
     if request.method == "POST":
         formulario = InicioForm(request.POST)
@@ -738,7 +736,7 @@ def recuperar_contrasena(request):
                     usuario=Usuario.objects.get(clave=clave_usuario)
                 except:
                     mensaje=1 #Mensaje de usuario no encontrado
-                    return HttpResponseRedirect('/')
+                    return render_to_response('recuperar_pass.html',locals(), context_instance=RequestContext(request))
                 email=usuario.email_institucional
                 contrasena_temporal=usuario.clave
                 usuario.set_password(contrasena_temporal)
@@ -749,10 +747,16 @@ def recuperar_contrasena(request):
                 print "************2"
                 correo.send()   
                 print "************3"
-                return HttpResponseRedirect('/')
+                mensaje=3 #Mensaje enviado
+                return render_to_response('recuperar_pass.html',locals(), context_instance=RequestContext(request))
+            else:
+                mensaje=4 #Mensaje de error de formulario
+                return render_to_response('recuperar_pass.html',locals(), context_instance=RequestContext(request))
+
         except:
-                return HttpResponseRedirect('/')
                 mensaje=2 #Mensaje de error de conexion
+                return render_to_response('recuperar_pass.html',locals(), context_instance=RequestContext(request))
+                
     else:
         formulario = recuperar_pass()
         return render_to_response('recuperar_pass.html',{'formulario':formulario}, context_instance=RequestContext(request))
@@ -847,6 +851,50 @@ def jefe_depto_coordinacion(request):
 
     return render_to_response('profesor/gestionarCoordinaciones.html',locals(),context_instance=RequestContext(request))
 
+
+
+def profesor_registrar_calificaciones_saberes(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materias=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario)
+    return render_to_response('profesor/registrar-calificacionesSaberes.html',locals(),context_instance=RequestContext(request))
+
+def profesor_ingresa_calificacion_saberes(request):
+    profesor=request.user
+    calificaciones=request.GET
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+    
+    materia=request.GET['materia']
+    request.session["materiaSaberes"] = materia
+    materia_saber = Materia.objects.filter(id=int(materia))[0]
+    saberes = SaberesPrevios.objects.filter(Materia__id=int(materia)).order_by('Alumno')
+    return render_to_response('profesor/IngresaCalificacionSaberes.html',locals(),context_instance=RequestContext(request))
+
+
+def profesor_guarda_calificacionSaberes(request):
+    profesor=request.user
+    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
+    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
+    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
+
+    saberes=request.GET
+    for saber in saberes:
+        p=SaberesPrevios.objects.filter(id=saber).update(Calificacion=saberes.get(saber))
+    mensaje=1
+    materia = request.session["materiaSaberes"]
+    materia_saber = Materia.objects.filter(id=int(materia))[0]
+    saberes = SaberesPrevios.objects.filter(Materia__id=int(materia)).order_by('Alumno')
+    return render_to_response('profesor/IngresaCalificacionSaberes.html',locals(),context_instance=RequestContext(request))
+
+
 def equipoLaboratorio(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
@@ -923,43 +971,54 @@ def profesor_equipo2(request):
         mensaje=2
     return render_to_response('profesor/agregar-equipo.html',locals(),context_instance=RequestContext(request))
 
-def profesor_registrar_calificaciones_saberes(request):
+def cambiar_contrasena(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
     es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
     es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
     es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
-    
-    materias=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario)
-    return render_to_response('profesor/registrar-calificacionesSaberes.html',locals(),context_instance=RequestContext(request))
+    bol=request.user
+    return render(request, 'profesor/Pr_cambiarpass.html', locals(), context_instance=RequestContext(request))
 
-def profesor_ingresa_calificacion_saberes(request):
-    profesor=request.user
-    calificaciones=request.GET
-    atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
-    es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
-    es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
-    es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
-    
-    materia=request.GET['materia']
-    request.session["materiaSaberes"] = materia
-    materia_saber = Materia.objects.filter(id=int(materia))[0]
-    saberes = SaberesPrevios.objects.filter(Materia__id=int(materia)).order_by('Alumno')
-    return render_to_response('profesor/IngresaCalificacionSaberes.html',locals(),context_instance=RequestContext(request))
-
-
-def profesor_guarda_calificacionSaberes(request):
+def cambiarPass(request):
     profesor=request.user
     atributos_profesor = Profesor.objects.filter(cve_usuario = profesor)[0]
     es_coordinador=Materia.objects.filter(coordinador__cve_usuario=atributos_profesor.cve_usuario).count()
     es_jefeDepto=JefeDepartamento.objects.filter(cve_prof__cve_usuario=atributos_profesor.cve_usuario).count()
     es_laboratorista=Laboratorio.objects.filter(encargado__cve_usuario=atributos_profesor.cve_usuario).count()
 
-    saberes=request.GET
-    for saber in saberes:
-        p=SaberesPrevios.objects.filter(id=saber).update(Calificacion=saberes.get(saber))
-    mensaje=1
-    materia = request.session["materiaSaberes"]
-    materia_saber = Materia.objects.filter(id=int(materia))[0]
-    saberes = SaberesPrevios.objects.filter(Materia__id=int(materia)).order_by('Alumno')
-    return render_to_response('profesor/IngresaCalificacionSaberes.html',locals(),context_instance=RequestContext(request))
+
+    bol=request.user
+    if request.method=='POST':
+        passact=request.POST.get('passact')
+        passnuevo=request.POST.get('passnuevo')
+        conpassnuevo=request.POST.get('con-passnuevo')
+        if passact=="" or passnuevo=="" or conpassnuevo=="":
+            print "vacios"
+            notif=4
+            return render(request, 'profesor/Pr_cambiarpass.html', locals(), context_instance=RequestContext(request))
+
+        else:
+            acceso = authenticate(username=str(bol), password=str(passact))
+            usuario=Usuario.objects.get(clave=bol)
+            
+            if acceso is not None:
+                print "contrasena correcta"
+                if passnuevo==conpassnuevo:
+                    print "pass nuevo coinciden"                    
+                    usuario.set_password(passnuevo)
+                    usuario.save()
+                    notif=1
+                    return render(request, 'profesor/Pr_cambiarpass.html', locals(), context_instance=RequestContext(request))
+                else:
+                    print "pass nuevo no coinciden"
+                    notif=3
+                    return render(request, 'profesor/Pr_cambiarpass.html', locals(), context_instance=RequestContext(request))
+                
+                print "passnuevo: "+passnuevo
+                print "confir passnuevo: "+conpassnuevo
+                
+            if acceso is None:
+                notif=2
+                print "contrasena incorrecta"
+                return render(request, 'profesor/Pr_cambiarpass.html', locals(), context_instance=RequestContext(request)) 
