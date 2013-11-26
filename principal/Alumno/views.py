@@ -92,13 +92,26 @@ def actualizarInfo(request):
 
 	elif 'fin_dir' in request.POST:
 		calle=request.POST.get('al_calle')
-		num=request.POST.get('al_numint')
+		#num=request.POST.get('al_numint')
+		num1=request.POST.get('al_numint')
+		if num1=="":
+			num=None
+		else:
+			num=num1
 		colonia=request.POST.get('al_colonia')
-		cp=request.POST.get('al_cp')
+		cp1=request.POST.get('al_cp')
+		if cp1=="":
+			cp=None
+		else:
+			cp=cp1
 		edo=request.POST.get('al_estado')
 		delmun=request.POST.get('al_delmun')
 		tel=request.POST.get('al_tel')
-		movil=request.POST.get('al_movil')
+		movil1=request.POST.get('al_movil')
+		if movil1=="":
+			movil=None
+		else:
+			movil=movil1
 		email=request.POST.get('al_email')
 		Usuario.objects.filter(clave=bol).update(calle=calle, num=num, colonia=colonia, cp=cp, estado=edo, municipio_o_delegacion=delmun, Telefono_Casa=tel, Telefono_Celular=movil, email_institucional=email)
 		aux=0

@@ -11,7 +11,12 @@
 		<div class="page-header">
 			<h2>Cambiar contraseña</h2>
 		</div>
-		
+
+		{% if notif == 4 %}
+			<script>
+				bootbox.alert("Llena todos los campos")
+			</script>
+
 		<script>
 		function validacion(formulario){
 			var er_pass= /(^([A-Z]{4,4}[0-9]{2,2})|^([a-z]{4,4}[0-9]{2,2}))/  
@@ -27,11 +32,6 @@
 			}
 		}
 		</script>
-
-		{% if notif == 4 %}
-			<script>
-				bootbox.alert("Llena todos los campos")
-			</script>
 
 		{% elif notif == 1 %}
 			<script>

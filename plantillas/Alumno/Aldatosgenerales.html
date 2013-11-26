@@ -16,6 +16,17 @@
 				</script>
 				{% endif %}
 
+				<script>
+				function check(input) {
+					if(input.validity.patternMismatch){  
+						input.setCustomValidity("Formato incorrecto.");  
+					}  
+					else {  
+						input.setCustomValidity("");  
+					}                 
+				}  
+				</script>
+
 				<div class="show-content">
 					<div class="tabbable">
 						<ul class="nav nav-tabs">
@@ -94,8 +105,8 @@
 										<td><label id="al-nombre">{{nombreCompleto}}</label></td>
 									</tr>
 									<tr>
-										<td><label align="right"><strong>CURP:</strong></label></td>
-										<td><input type="text" value="{{bol.curp}}" name="al_curp" pattern="^[a-zA-Z0-9]*$" minlength="16" required></td>
+										<td><label align="right"><strong>CURP*:</strong></label></td>
+										<td><input type="text" value="{{bol.curp}}" name="al_curp" pattern="^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$" oninput="check(this)" title="Ingresa una CURP válida." required></td>
 									</tr>
 									<!--<tr>
 										<td><label align="right"><strong>RFC:</strong></label></td>
@@ -106,6 +117,11 @@
 										<td><label id="al-sexo">{{sexo}}</label></td>
 									</tr>
 								</table>
+
+								<div align="center" style="padding-bottom:20px; padding-top:20px;">
+									<small>* Campos obligatorios</small>
+								</div>
+
 								<input type="submit" class="btn btn-default" value="Guardar" name="fin_datgen">
 								</form>
 							</div>
@@ -147,7 +163,7 @@
 									</tr>									
 									<tr>
 										<td><label align="right"><strong>Nacionalidad:</strong></label></td>
-										<td><input type="text" value="{{bol.nacionalidad}}" name="al_nacionalidad" pattern="^[a-zA-Z\s]*$"></td>
+										<td><input type="text" value="{{bol.nacionalidad}}" name="al_nacionalidad" pattern="^[a-zA-Z\s]*$" oninput="check(this)"></td>
 									</tr>
 									<!--<tr>
 										<td><label align="right"><strong>Entidad de nacimiento:</strong></label></td>
@@ -173,7 +189,11 @@
 									</tr>									
 									<tr>
 										<td><label align="right"><strong>Número:</strong></label></td>
+										{%if bol.num == None %}
+										<td><label id="al-numint"></label></td>
+										{% else %}
 										<td><label id="al-numint">{{bol.num}}</label></td>
+										{% endif %}
 									</tr>
 									<!--<tr>
 										<td><label align="right"><strong>Número ext:</strong></label></td>
@@ -185,7 +205,11 @@
 									</tr>
 									<tr>
 										<td><label align="right"><strong>C.P.:</strong></label></td>
+										{% if bol.cp == None %}
+										<td><label id="al-cp"></label></td>
+										{% else %}
 										<td><label id="al-cp">{{bol.cp}}</label></td>
+										{% endif %}
 									</tr>
 									<tr>
 										<td><label align="right"><strong>Estado:</strong></label></td>
@@ -201,7 +225,11 @@
 									</tr>
 									<tr>
 										<td><label align="right"><strong>Móvil:</strong></label></td>
+										{% if bol.Telefono_Celular == None %}
+										<td><label id="al-movil"></label></td>
+										{% else %}
 										<td><label id="al-movil">{{bol.Telefono_Celular}}</label></td>
+										{% endif %}
 									</tr>
 									<tr>
 										<td><label align="right"><strong>Email:</strong></label></td>
@@ -225,7 +253,11 @@
 									</tr>									
 									<tr>
 										<td><label align="right"><strong>Número:</strong></label></td>
-										<td><input type="text" value="{{bol.num}}" name="al_numint"></td>
+										{%if bol.num == None %}
+										<td><input type="text" value="" name="al_numint" pattern="\d+" oninput="check(this)" title="Solo números."></td>
+										{% else %}
+										<td><input type="text" value="{{bol.num}}" name="al_numint" pattern="\d+" oninput="check(this)" title="Solo números."></td>
+										{% endif %}
 									</tr>
 									<!--<tr>
 										<td><label align="right"><strong>Número ext:</strong></label></td>
@@ -237,7 +269,11 @@
 									</tr>
 									<tr>
 										<td><label align="right"><strong>C.P.:</strong></label></td>
-										<td><input type="text" value="{{bol.cp}}" name="al_cp" pattern="^[0-9]*$"></td>
+										{% if bol.cp == None %}
+										<td><input type="text" value="" name="al_cp" pattern="\d{5}" oninput="check(this)" title="Solo números (5 dígitos)."></td>
+										{% else %}
+										<td><input type="text" value="{{bol.cp}}" name="al_cp" pattern="\d{5}" oninput="check(this)" title="Solo números (5 dígitos)."></td>
+										{% endif %}
 									</tr>
 									
 								</table>
@@ -246,25 +282,33 @@
 								<table cellpadding="3">
 									<tr>
 										<td><label align="right"><strong>Estado:</strong></label></td>
-										<td><input type="text" value="{{bol.estado}}" name="al_estado" pattern="^[a-zA-Z\s]*$"></td>
+										<td><input type="text" value="{{bol.estado}}" name="al_estado" pattern="^[a-zA-Z\s]*$" oninput="check(this)" title="Solo letras."></td>
 									</tr>
 									<tr>
 										<td><label align="right"><strong>Del/Mun:</strong></label></td>
 										<td><input type="text" value="{{bol.municipio_o_delegacion}}" name="al_delmun"></td>
 									</tr>
 									<tr>
-										<td><label align="right"><strong>Teléfono:</strong></label></td>
-										<td><input type="text" value="{{bol.Telefono_Casa}}" name="al_tel" pattern="(\+?\d[- .]*){8,10}" required></td>
+										<td><label align="right"><strong>Teléfono*:</strong></label></td>
+										<td><input type="text" value="{{bol.Telefono_Casa}}" name="al_tel" pattern="(\+?\d[- .]*){8}" oninput="check(this)" title="Solo números (8 dígitos)." required></td>
 									</tr>
 									<tr>
 										<td><label align="right"><strong>Móvil:</strong></label></td>
-										<td><input type="text" value="{{bol.Telefono_Celular}}" name="al_movil" pattern="(\+?\d[- .]*){10,13}"></td>
+										{% if bol.Telefono_Celular == None %}
+										<td><input type="text" value="" name="al_movil" pattern="(\+?\d[- .]*){10}" oninput="check(this)" title="Solo números (10 dígitos)."></td>
+										{% else %}
+										<td><input type="text" value="{{bol.Telefono_Celular}}" name="al_movil" pattern="(\+?\d[- .]*){10}" oninput="check(this)"  title="Solo números (10 dígitos)."></td>
+										{% endif %}
 									</tr>
 									<tr>
-										<td><label align="right"><strong>Email:</strong></label></td>
-										<td><input type="text" value="{{bol.email_institucional}}" name="al_email" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}" title="Ingresa un email válido" required></td>
+										<td><label align="right"><strong>Email*:</strong></label></td>
+										<td><input type="text" value="{{bol.email_institucional}}" name="al_email" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}"  oninput="check(this)" title="Ingresa un email válido" required></td>
 									</tr>
 								</table>
+								</div>
+
+								<div align="center" style="padding-bottom:20px; padding-top:20px;">
+									<small>* Campos obligatorios</small>
 								</div>
 
 								<input type="submit" class="btn btn-default" value="Guardar" name="fin_dir">
@@ -322,7 +366,7 @@
 								<table cellpadding="10">
 									<tr>
 										<td align="right"><label><strong>Nombre de tutor:</strong></label></td>
-										<td><input type="text" value="{{bol2.tutor_legal}}" name="al_tutor" pattern="^[a-zA-Z\s]*$" title="Ingresa un nombre válido"></td>
+										<td><input type="text" value="{{bol2.tutor_legal}}" name="al_tutor" pattern="^[a-zA-Z\s]*$" oninput="check(this)" title="Ingresa un nombre válido"></td>
 									</tr>									
 									<!--<tr>
 										<td><label align="right"><strong>RFC tutor:</strong></label></td>
